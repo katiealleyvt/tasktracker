@@ -1,4 +1,12 @@
-import { Card, HStack, Box, Heading, VStack, IconButton, type CardRootProps } from "@chakra-ui/react";
+import {
+  Card,
+  HStack,
+  Box,
+  Heading,
+  VStack,
+  IconButton,
+  type CardRootProps,
+} from "@chakra-ui/react";
 import type { Task } from "~/models/task";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu"
 
@@ -11,7 +19,7 @@ export default function TaskCard({ task, ...props }: TaskProps) {
         <Card.Header py="0.5" px="0.5">
             <HStack justifyContent={"end"} w="100%">
             <IconButton size="sm" variant={"ghost"}>
-                <LuPencilLine/>
+              <LuPencilLine />
             </IconButton>
         </HStack>
         </Card.Header>

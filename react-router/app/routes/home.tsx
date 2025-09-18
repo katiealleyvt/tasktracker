@@ -1,3 +1,4 @@
+"use client"
 import {
   Box,
   Card,
@@ -13,10 +14,11 @@ import {
 } from "@chakra-ui/react";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 import type { Route } from "./+types/home";
-import { tasks } from "../data/sample-data";
 import TaskCard from "~/components/task-card";
 import StatusCard from "~/components/status-card";
-import { Status } from "~/models/task";
+import { Status, Task } from "~/models/task";
+import { useState } from "react";
+import BoardColumn from "~/components/board-column";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Tasks Tracker" }];
@@ -24,33 +26,13 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-    <Container p="10">
-      <Grid templateColumns={"repeat(3,1fr)"} gap="5">
-        <GridItem>
-          <VStack gap="5" w="100%">
-            <StatusCard status={Status.Daily} backgroundColor="green"/>
-            {tasks.map((item, idx) => (
-              <TaskCard key={idx} task={item} />
-            ))}
-          </VStack>
-        </GridItem>
-        <GridItem>
-          <VStack gap="5" w="100%">
-            <StatusCard status={Status.Daily} backgroundColor="blue" />
-            {tasks.map((item, idx) => (
-              <TaskCard key={idx} task={item} />
-            ))}
-          </VStack>
-        </GridItem>
-        <GridItem>
-          <VStack gap="5" w="100%">
-            <StatusCard status={Status.Done} backgroundColor="purple" />
-            {tasks.map((item, idx) => (
-              <TaskCard key={idx} task={item} />
-            ))}
-          </VStack>
-        </GridItem>
-      </Grid>
-    </Container>
+        <Container p="10">
+          <Grid templateColumns={"repeat(3,1fr)"} gap="5">
+            <BoardColumn status={Status.Daily}/>
+            <BoardColumn status={Status.Todo}/>
+            <BoardColumn status={Status.Done}/>
+
+          </Grid>
+        </Container>
   );
 }

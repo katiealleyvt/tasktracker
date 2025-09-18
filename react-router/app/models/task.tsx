@@ -2,7 +2,8 @@ export class Task {
 constructor(
     public name: string,
     public points: number,
-    public status: Status
+    public status: Status,
+    public id: string
 ){
 
 }

@@ -10,6 +10,12 @@ import {
 import type { Route } from "./+types/root";
 import "./app.css";
 import { Provider } from "./components/ui/provider";
+import {
+  ChakraProvider,
+  createSystem,
+  defaultConfig,
+  defineConfig,
+} from "@chakra-ui/react";
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -23,6 +29,30 @@ export const links: Route.LinksFunction = () => [
     href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
+const config = defineConfig({
+  theme: {
+    tokens: {
+      colors: {
+        brand: {
+          green: { value: "#A7E8BD" },
+          blue: { value: "#B3E0FF" },
+          purple: { value: "#D6C8FF" },
+        },
+      },
+    },
+    semanticTokens: {
+      colors: {
+        status: {
+          daily: { value: "{colors.brand.green}" },
+          todo: { value: "{colors.brand.blue}" },
+          done: { value: "{colors.brand.purple}" },
+        },
+      },
+    },
+  },
+});
+
+const system = createSystem(defaultConfig, config);
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -34,7 +64,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Provider>{children}</Provider>
+        <Provider>
+          <ChakraProvider value={system}>{children}</ChakraProvider>
+        </Provider>
         <ScrollRestoration />
         <Scripts />
       </body>
