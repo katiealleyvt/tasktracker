@@ -9,6 +9,8 @@ const config = defineConfig({
           blue: { value: "#B3E0FF" },
           purple: { value: "#D6C8FF" },
           pink: { value: "#FFD1DC" },
+          gold: { value: "#FFD700" },
+          nav: { value: "#1f142e" },
         },
       },
     },

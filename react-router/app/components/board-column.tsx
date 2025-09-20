@@ -10,6 +10,7 @@ import RewardCard from "./reward-card";
 import { Status } from "~/models/enum";
 import type { Reward } from "~/models/reward";
 import { toaster, Toaster } from "./ui/toaster";
+import { WalletContext } from "~/contexts/wallet-context";
 
 type Props = GridItemProps & {
   status: Status;
@@ -31,6 +32,7 @@ export default function BoardColumn({ status, ...props }: Props) {
 
 function TaskColumn({ status, ...props }: Props) {
   const { items, setItems } = useContext(TaskContext);
+  const { wallet, setWallet } = useContext(WalletContext);
   const taskCards = items.filter((item) => item.status === status);
   function completeTask(task: Task) {
     setItems(
@@ -38,6 +40,10 @@ function TaskColumn({ status, ...props }: Props) {
         item.id === task.id ? { ...item, status: Status.Done } : item
       )
     );
+    setWallet((prevWallet) => ({
+      ...prevWallet,
+      amount: prevWallet.amount + task.points,
+    }));
     toaster.create({
       title: "Task completed!",
       duration: 3000,
@@ -74,12 +80,14 @@ function TaskColumn({ status, ...props }: Props) {
 }
 function RewardColumn({ ...props }: GridItemProps) {
   const { items, setItems } = useContext(RewardContext);
+  const { wallet, setWallet } = useContext(WalletContext);
   function buyReward(reward: Reward) {
     setItems(
       items.map((item) =>
         item.id === reward.id ? { ...item, isArchived: true } : item
       )
     );
+    setWallet({ amount: wallet.amount - reward.cost });
     toaster.create({
       title: "Reward purchased!",
       duration: 3000,

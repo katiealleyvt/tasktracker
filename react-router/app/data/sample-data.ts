@@ -10,3 +10,4 @@ export const tasks: Task[] = [
   new Task("Medication", 1, Status.Done, "5"),
 ];
 export const rewards: Reward[] = [new Reward("Massage", 30, false, "1")];
+export const wallet = { amount: 0 };
