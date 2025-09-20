@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Box,
   Card,
@@ -16,9 +16,13 @@ import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
 import type { Route } from "./+types/home";
 import TaskCard from "~/components/task-card";
 import StatusCard from "~/components/status-card";
-import { Status, Task } from "~/models/task";
+import { Task } from "~/models/task";
 import { useState } from "react";
 import BoardColumn from "~/components/board-column";
+import { TaskProvider } from "~/contexts/task-context";
+import { tasks } from "~/data/sample-data";
+import { Status } from "~/models/enum";
+import { Toaster } from "~/components/ui/toaster";
 
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Tasks Tracker" }];
@@ -26,13 +30,17 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   return (
-        <Container p="10">
-          <Grid templateColumns={"repeat(3,1fr)"} gap="5">
-            <BoardColumn status={Status.Daily}/>
-            <BoardColumn status={Status.Todo}/>
-            <BoardColumn status={Status.Done}/>
-
-          </Grid>
-        </Container>
+    <Container py="10" maxW={{ base: "100%", "2xl": "80%" }}>
+      <HStack>
+        <Grid templateColumns={"repeat(3, 1fr) 10rem 30%"} gap="5" w="100%">
+          <BoardColumn status={Status.Daily} />
+          <BoardColumn status={Status.Todo} />
+          <BoardColumn status={Status.Done} />
+          <GridItem />
+          <BoardColumn status={Status.Reward} />
+        </Grid>
+      </HStack>
+      <Toaster />
+    </Container>
   );
 }
