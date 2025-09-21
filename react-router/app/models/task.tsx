@@ -1,3 +1,4 @@
+import type { ObjectId } from "mongoose";
 import type { Status } from "./enum";
 
 export class Task {
@@ -5,6 +6,6 @@ export class Task {
     public name: string,
     public points: number,
     public status: Status,
-    public id: string
+    public _id?: ObjectId
   ) {}
 }

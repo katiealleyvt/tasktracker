@@ -32,15 +32,11 @@ export default function BoardColumn({ status, ...props }: Props) {
 }
 
 function TaskColumn({ status, ...props }: Props) {
-  const { items, setItems } = useContext(TaskContext);
+  const { items, updateTask, createTask } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
   const taskCards = items.filter((item) => item.status === status);
   function completeTask(task: Task) {
-    setItems(
-      items.map((item) =>
-        item.id === task.id ? { ...item, status: Status.Done } : item
-      )
-    );
+    updateTask(task._id!, { status: Status.Done });
     setWallet((prevWallet) => ({
       ...prevWallet,
       amount: prevWallet.amount + task.points,
@@ -52,33 +48,21 @@ function TaskColumn({ status, ...props }: Props) {
     });
   }
   function archiveTask(task: Task) {
-    setItems(
-      items.map((item) =>
-        item.id === task.id ? { ...item, status: Status.Done } : item
-      )
-    );
+    updateTask(task._id!, { status: Status.Done });
     toaster.create({
       title: "Task archived.",
       duration: 3000,
     });
   }
   function createCard() {
-    setItems([
-      ...items,
-      {
-        id: crypto.randomUUID(),
-        name: "",
-        points: 0,
-        status: status,
-      },
-    ]);
+    createTask(status);
   }
   return (
     <>
       {taskCards.map((item) => (
         <TaskCard
           task={item}
-          key={item.id}
+          key={item._id?.toString() ?? item.name}
           completeTask={(item) => {
             completeTask(item);
           }}
@@ -105,7 +89,7 @@ function RewardColumn({ ...props }: GridItemProps) {
     }
     setItems(
       items.map((item) =>
-        item.id === reward.id ? { ...item, isArchived: true } : item
+        item._id === reward._id ? { ...item, isArchived: true } : item
       )
     );
     setWallet({ amount: wallet.amount - reward.cost });
@@ -118,7 +102,7 @@ function RewardColumn({ ...props }: GridItemProps) {
   function archiveReward(reward: Reward) {
     setItems(
       items.map((item) =>
-        item.id === reward.id ? { ...item, isArchived: true } : item
+        item._id === reward._id ? { ...item, isArchived: true } : item
       )
     );
     toaster.create({
@@ -130,7 +114,6 @@ function RewardColumn({ ...props }: GridItemProps) {
     setItems([
       ...items,
       {
-        id: crypto.randomUUID(),
         name: "",
         cost: 0,
         isArchived: false,
@@ -143,7 +126,7 @@ function RewardColumn({ ...props }: GridItemProps) {
         item.isArchived ? undefined : (
           <RewardCard
             reward={item}
-            key={item.id}
+            key={item._id?.toString() ?? item.name}
             buyReward={() => buyReward(item)}
             archiveReward={() => archiveReward(item)}
             {...props}
