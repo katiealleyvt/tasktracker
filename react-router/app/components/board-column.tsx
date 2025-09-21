@@ -11,6 +11,7 @@ import { Status } from "~/models/enum";
 import type { Reward } from "~/models/reward";
 import { toaster, Toaster } from "./ui/toaster";
 import { WalletContext } from "~/contexts/wallet-context";
+import NewCard from "./new-card";
 
 type Props = GridItemProps & {
   status: Status;
@@ -61,6 +62,17 @@ function TaskColumn({ status, ...props }: Props) {
       duration: 3000,
     });
   }
+  function createCard() {
+    setItems([
+      ...items,
+      {
+        id: crypto.randomUUID(),
+        name: "",
+        points: 0,
+        status: status,
+      },
+    ]);
+  }
   return (
     <>
       {taskCards.map((item) => (
@@ -75,6 +87,7 @@ function TaskColumn({ status, ...props }: Props) {
           }}
         />
       ))}
+      <NewCard createNew={createCard} />
     </>
   );
 }
@@ -82,6 +95,14 @@ function RewardColumn({ ...props }: GridItemProps) {
   const { items, setItems } = useContext(RewardContext);
   const { wallet, setWallet } = useContext(WalletContext);
   function buyReward(reward: Reward) {
+    if (wallet.amount < reward.cost) {
+      toaster.create({
+        title: "Not enough points to buy this reward.",
+        duration: 3000,
+        type: "error",
+      });
+      return;
+    }
     setItems(
       items.map((item) =>
         item.id === reward.id ? { ...item, isArchived: true } : item
@@ -105,6 +126,17 @@ function RewardColumn({ ...props }: GridItemProps) {
       duration: 3000,
     });
   }
+  function createCard() {
+    setItems([
+      ...items,
+      {
+        id: crypto.randomUUID(),
+        name: "",
+        cost: 0,
+        isArchived: false,
+      },
+    ]);
+  }
   return (
     <>
       {items.map((item) =>
@@ -118,6 +150,7 @@ function RewardColumn({ ...props }: GridItemProps) {
           />
         )
       )}
+      <NewCard createNew={createCard} />
     </>
   );
 }

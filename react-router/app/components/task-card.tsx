@@ -6,6 +6,7 @@ import {
   VStack,
   IconButton,
   type CardRootProps,
+  Editable,
 } from "@chakra-ui/react";
 import { type Task } from "~/models/task";
 import { LuCheck, LuPencilLine, LuTrash2 } from "react-icons/lu";
@@ -51,13 +52,33 @@ export default function TaskCard({
       <Card.Body>
         <HStack justifyContent={"space-between"} w="100%">
           <Box>
-            <Heading>{task.name}</Heading>
+            <Editable.Root
+              defaultValue={task.name}
+              placeholder="Insert Reward Name"
+              defaultEdit={task.name === ""}
+            >
+              <Heading>
+                <Editable.Preview />
+              </Heading>
+              <Heading>
+                <Editable.Input />
+              </Heading>
+            </Editable.Root>
           </Box>
-          <Box>
-            <VStack>
-              <Heading>{task.points}</Heading>
-            </VStack>
-          </Box>
+          <Editable.Root
+            defaultValue={task.points.toString()}
+            placeholder="Insert Reward Name"
+            defaultEdit={task.points === 0}
+            justifyContent={"end"}
+            width="30%"
+          >
+            <Heading>
+              <Editable.Preview />
+            </Heading>
+            <Heading>
+              <Editable.Input textAlign={"right"} />
+            </Heading>
+          </Editable.Root>
         </HStack>
       </Card.Body>
     </Card.Root>

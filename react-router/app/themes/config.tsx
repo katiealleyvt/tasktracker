@@ -11,6 +11,8 @@ const config = defineConfig({
           pink: { value: "#FFD1DC" },
           gold: { value: "#FFD700" },
           nav: { value: "#1f142e" },
+          mutedBlack: { value: "#141314" },
+          darkPurple: { value: "#2e1e47" },
         },
       },
     },

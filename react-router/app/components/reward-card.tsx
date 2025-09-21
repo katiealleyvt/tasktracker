@@ -1,6 +1,7 @@
 import {
   Box,
   Card,
+  Editable,
   Heading,
   HStack,
   IconButton,
@@ -11,7 +12,7 @@ import {
 import { LuPencilLine, LuShoppingCart, LuTrash2 } from "react-icons/lu";
 import type { Reward } from "~/models/reward";
 import { Toaster } from "./ui/toaster";
-import type { JSX } from "react";
+import { useState, type JSX } from "react";
 
 type RewardProps = CardRootProps & {
   reward: Reward;
@@ -51,13 +52,34 @@ export default function RewardCard({
       <Card.Body>
         <HStack justifyContent={"space-between"} w="100%">
           <Box>
-            <Heading>{reward.name}</Heading>
+            <Editable.Root
+              defaultValue={reward.name}
+              placeholder="Insert Reward Name"
+              defaultEdit={reward.name === ""}
+            >
+              <Heading>
+                <Editable.Preview />
+              </Heading>
+              <Heading>
+                <Editable.Input />
+              </Heading>
+            </Editable.Root>
           </Box>
-          <Box>
-            <VStack>
-              <Heading>{reward.cost}</Heading>
-            </VStack>
-          </Box>
+          <Editable.Root
+            defaultValue={reward.cost.toString()}
+            placeholder="0"
+            defaultEdit={reward.cost === 0}
+            textAlign={"right"}
+            width="30%"
+            justifyContent={"end"}
+          >
+            <Heading>
+              <Editable.Preview />
+            </Heading>
+            <Heading>
+              <Editable.Input textAlign={"right"} />
+            </Heading>
+          </Editable.Root>
         </HStack>
       </Card.Body>
     </Card.Root>
