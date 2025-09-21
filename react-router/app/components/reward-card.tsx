@@ -26,6 +26,8 @@ export default function RewardCard({
   archiveReward,
   ...props
 }: RewardProps) {
+  const [isEditing, setIsEditing] = useState(reward.name === "");
+
   return (
     <Card.Root w="100%" {...props}>
       <Card.Header py="0.5" px="0.5">
@@ -37,7 +39,11 @@ export default function RewardCard({
           >
             <LuTrash2 />
           </IconButton>
-          <IconButton size="sm" variant={"ghost"}>
+          <IconButton
+            size="sm"
+            variant={"ghost"}
+            onClick={() => setIsEditing((prev) => !prev)}
+          >
             <LuPencilLine />
           </IconButton>
           <IconButton
@@ -52,34 +58,43 @@ export default function RewardCard({
       <Card.Body>
         <HStack justifyContent={"space-between"} w="100%">
           <Box>
-            <Editable.Root
-              defaultValue={reward.name}
-              placeholder="Insert Reward Name"
-              defaultEdit={reward.name === ""}
-            >
-              <Heading>
-                <Editable.Preview />
-              </Heading>
-              <Heading>
-                <Editable.Input />
-              </Heading>
-            </Editable.Root>
+            {isEditing ? (
+              <Editable.Root
+                defaultValue={reward.name}
+                placeholder="Insert Reward Name"
+                defaultEdit={reward.name === ""}
+              >
+                <Heading>
+                  <Editable.Preview />
+                </Heading>
+                <Heading>
+                  <Editable.Input />
+                </Heading>
+              </Editable.Root>
+            ) : (
+              <Heading>{reward.name}</Heading>
+            )}
           </Box>
-          <Editable.Root
-            defaultValue={reward.cost.toString()}
-            placeholder="0"
-            defaultEdit={reward.cost === 0}
-            textAlign={"right"}
-            width="30%"
-            justifyContent={"end"}
-          >
-            <Heading>
-              <Editable.Preview />
-            </Heading>
-            <Heading>
-              <Editable.Input textAlign={"right"} />
-            </Heading>
-          </Editable.Root>
+          <Box w="30%" textAlign={"right"}>
+            {isEditing ? (
+              <Editable.Root
+                defaultValue={reward.cost.toString()}
+                placeholder="0"
+                defaultEdit={reward.cost === 0}
+                textAlign={"right"}
+                justifyContent={"end"}
+              >
+                <Heading>
+                  <Editable.Preview />
+                </Heading>
+                <Heading>
+                  <Editable.Input textAlign={"right"} />
+                </Heading>
+              </Editable.Root>
+            ) : (
+              <Heading>{reward.cost}</Heading>
+            )}
+          </Box>
         </HStack>
       </Card.Body>
     </Card.Root>
