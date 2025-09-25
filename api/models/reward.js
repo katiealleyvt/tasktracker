@@ -2,16 +2,16 @@ const mongoose = require("mongoose");
 
 const rewardSchema = new mongoose.Schema({
   name: {
-    required: true,
     type: String,
+    default: "",
   },
   cost: {
-    required: true,
     type: Number,
+    default: 0,
   },
   isArchived: {
-    required: true,
     type: Boolean,
+    default: false,
   },
 });
 

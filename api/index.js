@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 const taskRoutes = require("./routes/task-routes");
 const rewardRoutes = require("./routes/reward-routes");
@@ -8,7 +9,11 @@ const walletRoutes = require("./routes/wallet-routes");
 const app = express();
 
 app.use(express.json());
-
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 app.listen(3000, () => {
   console.log(`Server Started at ${3000}`);
 });

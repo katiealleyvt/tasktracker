@@ -5,11 +5,13 @@ import {
   Heading,
   HStack,
   IconButton,
+  Input,
+  NumberInput,
   Status,
   VStack,
   type CardRootProps,
 } from "@chakra-ui/react";
-import { LuPencilLine, LuShoppingCart, LuTrash2 } from "react-icons/lu";
+import { LuPencilLine, LuSave, LuShoppingCart, LuTrash2 } from "react-icons/lu";
 import type { Reward } from "~/models/reward";
 import { Toaster } from "./ui/toaster";
 import { useState, type JSX } from "react";
@@ -18,16 +20,25 @@ type RewardProps = CardRootProps & {
   reward: Reward;
   buyReward: (reward: Reward) => void;
   archiveReward: (reward: Reward) => void;
+  updateReward: (reward: Reward) => void;
 };
 
 export default function RewardCard({
   reward,
   buyReward,
   archiveReward,
+  updateReward,
   ...props
 }: RewardProps) {
   const [isEditing, setIsEditing] = useState(reward.name === "");
+  const [thisReward, setReward] = useState<Reward>(reward);
 
+  function handleEditToggle() {
+    if (isEditing) {
+      updateReward(thisReward);
+    }
+    setIsEditing((prev) => !prev);
+  }
   return (
     <Card.Root w="100%" {...props}>
       <Card.Header py="0.5" px="0.5">
@@ -42,9 +53,9 @@ export default function RewardCard({
           <IconButton
             size="sm"
             variant={"ghost"}
-            onClick={() => setIsEditing((prev) => !prev)}
+            onClick={() => handleEditToggle()}
           >
-            <LuPencilLine />
+            {isEditing ? <LuSave /> : <LuPencilLine />}
           </IconButton>
           <IconButton
             size="sm"
@@ -59,40 +70,34 @@ export default function RewardCard({
         <HStack justifyContent={"space-between"} w="100%">
           <Box>
             {isEditing ? (
-              <Editable.Root
-                defaultValue={reward.name}
-                placeholder="Insert Reward Name"
-                defaultEdit={reward.name === ""}
-              >
-                <Heading>
-                  <Editable.Preview />
-                </Heading>
-                <Heading>
-                  <Editable.Input />
-                </Heading>
-              </Editable.Root>
+              <Input
+                value={thisReward.name}
+                onChange={(e) =>
+                  setReward((prev) => ({ ...prev, name: e.target.value }))
+                }
+                placeholder="Insert Reward"
+              />
             ) : (
-              <Heading>{reward.name}</Heading>
+              <Heading>{thisReward.name}</Heading>
             )}
           </Box>
           <Box w="30%" textAlign={"right"}>
             {isEditing ? (
-              <Editable.Root
-                defaultValue={reward.cost.toString()}
-                placeholder="0"
-                defaultEdit={reward.cost === 0}
-                textAlign={"right"}
-                justifyContent={"end"}
+              <NumberInput.Root
+                value={thisReward.cost.toString()}
+                onValueChange={(valueString) =>
+                  setReward((prev) => ({
+                    ...prev,
+                    points: !isNaN(valueString.valueAsNumber)
+                      ? valueString.valueAsNumber
+                      : prev.cost,
+                  }))
+                }
               >
-                <Heading>
-                  <Editable.Preview />
-                </Heading>
-                <Heading>
-                  <Editable.Input textAlign={"right"} />
-                </Heading>
-              </Editable.Root>
+                <NumberInput.Input />
+              </NumberInput.Root>
             ) : (
-              <Heading>{reward.cost}</Heading>
+              <Heading textAlign={"right"}>{thisReward.cost}</Heading>
             )}
           </Box>
         </HStack>

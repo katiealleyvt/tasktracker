@@ -1,8 +1,9 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { wallet } from "../data/sample-data";
 import type { Wallet } from "~/models/wallet";
+import { updateWallet } from "~/data/wallet-calls";
 
 export const WalletContext = createContext<{
   wallet: Wallet;
@@ -20,6 +21,16 @@ export function WalletProvider({
   initialWallet: Wallet;
 }) {
   const [item, setItem] = useState<Wallet>(initialWallet);
+  useEffect(() => {
+    const update = async () => {
+      try {
+        const wallet = await updateWallet({ ...item });
+      } catch (error) {
+        console.error("Error updating wallet:", error);
+      }
+    };
+    update();
+  }, [item]);
   return (
     <WalletContext.Provider value={{ wallet: item, setWallet: setItem }}>
       {children}

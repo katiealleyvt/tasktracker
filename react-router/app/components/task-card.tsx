@@ -16,24 +16,35 @@ import {
   LuCircleCheckBig,
   LuPencilLine,
   LuTrash2,
+  LuSave,
 } from "react-icons/lu";
 import { Status } from "~/models/enum";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type TaskProps = CardRootProps & {
   task: Task;
   completeTask: (task: Task) => void;
   archiveTask: (task: Task) => void;
+  updateTask: (task: Task) => void;
 };
 
 export default function TaskCard({
   task,
   completeTask,
   archiveTask,
+  updateTask,
   ...props
 }: TaskProps) {
   const [isEditing, setIsEditing] = useState(task.name === "");
   const [thisTask, setTask] = useState<Task>(task);
+
+  function handleEditToggle() {
+    if (isEditing) {
+      updateTask(thisTask);
+    }
+    setIsEditing((prev) => !prev);
+  }
+
   return (
     <Card.Root w="100%" {...props}>
       <Card.Header py="0.5" px="0.5">
@@ -48,9 +59,9 @@ export default function TaskCard({
           <IconButton
             size="sm"
             variant={"ghost"}
-            onClick={() => setIsEditing((prev) => !prev)}
+            onClick={() => handleEditToggle()}
           >
-            <LuPencilLine />
+            {isEditing ? <LuSave /> : <LuPencilLine />}
           </IconButton>
           {task.status != Status.Done && (
             <IconButton

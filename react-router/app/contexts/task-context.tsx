@@ -1,11 +1,13 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { tasks } from "../data/sample-data";
 import type { Task } from "~/models/task";
 import {
   updateTask as updateTaskAPI,
   createTask as createTaskAPI,
+  deleteTask as deleteTaskAPI,
+  getAllTasks,
 } from "~/data/task-calls";
 import type { ObjectId } from "mongoose";
 import type { Status } from "~/models/enum";
@@ -15,21 +17,29 @@ export const TaskContext = createContext<{
   setItems: React.Dispatch<React.SetStateAction<Task[]>>;
   updateTask: (id: ObjectId, updates: Partial<Task>) => Promise<void>;
   createTask: (status: Status) => Promise<void>;
+  deleteTask: (id: ObjectId) => Promise<void>;
 }>({
   items: [],
   setItems: () => {},
   updateTask: async () => {},
   createTask: async () => {},
+  deleteTask: async () => {},
 });
 
-export function TaskProvider({
-  children,
-  initialTasks,
-}: {
-  children: React.ReactNode;
-  initialTasks?: Task[];
-}) {
-  const [items, setItems] = useState<Task[]>(initialTasks ?? []);
+export function TaskProvider({ children }: { children: React.ReactNode }) {
+  const [items, setItems] = useState<Task[]>([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const allTasks = await getAllTasks();
+        setItems(allTasks);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+    fetchTasks();
+  }, []);
 
   const updateTask = async (id: ObjectId, updates: Partial<Task>) => {
     try {
@@ -59,8 +69,20 @@ export function TaskProvider({
       throw error;
     }
   };
+  const deleteTask = async (id: ObjectId) => {
+    try {
+      await deleteTaskAPI(id);
+      setItems((prevItems) => prevItems.filter((item) => item._id !== id));
+      return;
+    } catch (error) {
+      console.error("Failed to remove task:", error);
+      throw error;
+    }
+  };
   return (
-    <TaskContext.Provider value={{ items, setItems, updateTask, createTask }}>
+    <TaskContext.Provider
+      value={{ items, setItems, updateTask, createTask, deleteTask }}
+    >
       {children}
     </TaskContext.Provider>
   );

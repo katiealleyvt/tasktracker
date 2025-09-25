@@ -6,6 +6,16 @@ module.exports = router;
 const Model = require("../models/task");
 //Post Method
 router.post("/post", async (req, res) => {
+  if (
+    req.body.name == undefined ||
+    typeof req.body.points !== "number" ||
+    !req.body.status
+  ) {
+    console.log(req.body);
+    return res
+      .status(400)
+      .json({ message: "Missing or invalid required fields" });
+  }
   const data = new Model({
     name: req.body.name,
     points: req.body.points,
