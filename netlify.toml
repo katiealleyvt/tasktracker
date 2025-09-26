@@ -1,6 +1,6 @@
 [build]
-  command = "cd frontend && npm run build"  # Build your frontend (React/Vite)
-  publish = "frontend/dist"                 # Publish the built frontend
+  command = "cd react-router && npm run build"  # Build your frontend (React/Vite)
+  publish = "react-router/public"                 # Publish the built frontend
 
 # Redirect API routes to Netlify Functions
 [[redirects]]
