@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 module.exports = router;
-const Model = require("../models/reward");
+const Model = require("../../react-router/app/models/db/reward");
 //Post Method
 router.post("/post", async (req, res) => {
   console.log(req.body);

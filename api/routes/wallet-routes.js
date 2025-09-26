@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const router = express.Router();
 
 module.exports = router;
-const Model = require("../models/wallet");
+const Model = require("../../react-router/app/models/db/wallet");
 //Post Method
 router.post("/post", async (req, res) => {
   console.log(req.body);

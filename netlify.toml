@@ -1,0 +1,25 @@
+[build]
+  command = "cd frontend && npm run build"  # Build your frontend (React/Vite)
+  publish = "frontend/dist"                 # Publish the built frontend
+
+# Redirect API routes to Netlify Functions
+[[redirects]]
+  from = "/api/tasks/*"
+  to = "/.netlify/functions/tasks"
+  status = 200
+
+[[redirects]]
+  from = "/api/rewards/*"
+  to = "/.netlify/functions/rewards"
+  status = 200
+
+[[redirects]]
+  from = "/api/wallet/*"
+  to = "/.netlify/functions/wallet"
+  status = 200
+
+# Optional: Redirect root to frontend
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

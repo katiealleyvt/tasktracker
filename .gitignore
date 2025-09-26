@@ -1,2 +1,5 @@
 api/.env
 react-router/.env
+
+# Local Netlify folder
+.netlify
