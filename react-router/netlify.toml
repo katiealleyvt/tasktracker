@@ -14,9 +14,3 @@
   from = "/api/wallet/*"
   to = "/.netlify/functions/wallet"
   status = 200
-
-# Optional: Redirect root to frontend
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
