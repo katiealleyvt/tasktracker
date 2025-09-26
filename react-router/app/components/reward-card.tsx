@@ -88,7 +88,7 @@ export default function RewardCard({
                 onValueChange={(valueString) =>
                   setReward((prev) => ({
                     ...prev,
-                    points: !isNaN(valueString.valueAsNumber)
+                    cost: !isNaN(valueString.valueAsNumber)
                       ? valueString.valueAsNumber
                       : prev.cost,
                   }))

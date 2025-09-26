@@ -1,11 +1,10 @@
 import type { ObjectId } from "mongoose";
 import type { Task } from "~/models/task";
-
-const API_HOST = "http://localhost:3000";
+import { api_host } from "~/root";
 
 export const updateTask = async (id: ObjectId, updates: Partial<Task>) => {
   try {
-    const response = await fetch(`${API_HOST}/api/tasks/update/${id}`, {
+    const response = await fetch(`${api_host}/api/tasks/update/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +23,7 @@ export const updateTask = async (id: ObjectId, updates: Partial<Task>) => {
 };
 export const createTask = async (updates: Partial<Task>) => {
   try {
-    const response = await fetch(`${API_HOST}/api/tasks/post`, {
+    const response = await fetch(`${api_host}/api/tasks/post`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +42,7 @@ export const createTask = async (updates: Partial<Task>) => {
 };
 export const getAllTasks = async () => {
   try {
-    const response = await fetch(`${API_HOST}/api/tasks/getAll`, {
+    const response = await fetch(`${api_host}/api/tasks/getAll`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +60,7 @@ export const getAllTasks = async () => {
 };
 export const deleteTask = async (id: ObjectId) => {
   try {
-    const response = await fetch(`${API_HOST}/api/tasks/delete/${id}`, {
+    const response = await fetch(`${api_host}/api/tasks/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",

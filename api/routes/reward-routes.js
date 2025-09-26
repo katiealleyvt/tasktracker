@@ -47,6 +47,7 @@ router.patch("/update/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const updatedData = req.body;
+    console.log("Updated data", updatedData);
     const options = { new: true };
 
     const result = await Model.findByIdAndUpdate(id, updatedData, options);

@@ -1,11 +1,10 @@
 import type { ObjectId } from "mongoose";
 import type { Wallet } from "~/models/wallet";
-
-const API_HOST = "http://localhost:3000";
+import { api_host } from "~/root";
 
 export const updateWallet = async (updates: Partial<Wallet>) => {
   try {
-    const response = await fetch(`${API_HOST}/api/wallet/update`, {
+    const response = await fetch(`${api_host}/api/wallet/update`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

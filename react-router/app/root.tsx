@@ -16,7 +16,9 @@ import {
   defaultConfig,
   defineConfig,
 } from "@chakra-ui/react";
-
+export const api_host =
+  import.meta.env.VITE_API_HOST || "http://localhost:3000";
+console.log("API Host:", api_host);
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {

@@ -1,13 +1,12 @@
 import type { ObjectId } from "mongoose";
 import type { Reward } from "~/models/reward";
-
-const API_HOST = "http://localhost:3000";
+import { api_host } from "~/root";
 
 export const updateReward = async (id: ObjectId, updates: Partial<Reward>) => {
   if (!id) return;
-  console.log("Id,", id);
+  console.log("updates", updates);
   try {
-    const response = await fetch(`${API_HOST}/api/rewards/update/${id}`, {
+    const response = await fetch(`${api_host}/api/rewards/update/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -26,7 +25,7 @@ export const updateReward = async (id: ObjectId, updates: Partial<Reward>) => {
 };
 export const createReward = async (updates: Partial<Reward>) => {
   try {
-    const response = await fetch(`${API_HOST}/api/rewards/post`, {
+    const response = await fetch(`${api_host}/api/rewards/post`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -45,7 +44,7 @@ export const createReward = async (updates: Partial<Reward>) => {
 };
 export const getAllRewards = async () => {
   try {
-    const response = await fetch(`${API_HOST}/api/rewards/getAll`, {
+    const response = await fetch(`${api_host}/api/rewards/getAll`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -63,7 +62,7 @@ export const getAllRewards = async () => {
 };
 export const deleteReward = async (id: ObjectId) => {
   try {
-    const response = await fetch(`${API_HOST}/api/rewards/delete/${id}`, {
+    const response = await fetch(`${api_host}/api/rewards/delete/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
