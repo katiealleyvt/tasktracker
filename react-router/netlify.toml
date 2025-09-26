@@ -21,5 +21,5 @@ base="/react-router"
 # Optional: Redirect root to frontend
 [[redirects]]
   from = "/*"
-  to = "/index.html"
+  to = "/"
   status = 200
