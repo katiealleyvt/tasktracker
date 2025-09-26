@@ -1,5 +1,9 @@
 [build]
-  command = "cd react-router && npm run build"  # Build your frontend (React/Vite)
+command = """
+    cd react-router &&
+    npm install &&
+    npm run build
+  """
   publish = "react-router/public"                 # Publish the built frontend
 
 # Redirect API routes to Netlify Functions
