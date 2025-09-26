@@ -1,4 +1,7 @@
-
+[build]
+command = "npm run build"
+publish="/react-router/build"
+base="/react-router"
 # Redirect API routes to Netlify Functions
 [[redirects]]
   from = "/api/tasks/*"
@@ -13,4 +16,10 @@
 [[redirects]]
   from = "/api/wallet/*"
   to = "/.netlify/functions/wallet"
+  status = 200
+
+# Optional: Redirect root to frontend
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
   status = 200
