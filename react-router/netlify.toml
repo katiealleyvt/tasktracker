@@ -1,6 +1,6 @@
 [build]
 command = "npm run build"
-publish="/react-router/build"
+publish="/build"
 base="/react-router"
 # Redirect API routes to Netlify Functions
 [[redirects]]
