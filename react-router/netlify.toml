@@ -8,3 +8,7 @@ base="/react-router"
   from = "/*"
   to = "/"
   status = 200
+  [[redirects]]
+  from = "/assets/*"
+  to = "/.netlify/build/:splat"
+  status = 200
