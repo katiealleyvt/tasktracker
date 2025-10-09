@@ -1,0 +1,10 @@
+[build]
+command = "npm run build"
+publish="/build"
+base="/react-router"
+
+# Optional: Redirect root to frontend
+[[redirects]]
+  from = "/*"
+  to = "/"
+  status = 200
