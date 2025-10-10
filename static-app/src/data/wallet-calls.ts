@@ -3,6 +3,7 @@ import { api_host } from "../App";
 import { Wallet } from "../models/wallet";
 
 export const updateWallet = async (updates: Partial<Wallet>) => {
+  console.log("updates", updates);
   try {
     const response = await fetch(`${api_host}/api/wallet/update`, {
       method: "PATCH",
