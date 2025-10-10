@@ -12,13 +12,13 @@ import {
   Grid,
   GridItem,
   Flex,
-  Toaster,
 } from "@chakra-ui/react";
 import { LuCheck, LuCoins, LuPencilLine, LuX } from "react-icons/lu";
 import { useContext, useState } from "react";
 import { WalletContext } from "../contexts/wallet-context";
 import BoardColumn from "./board-column";
 import { Status } from "../models/enum";
+import { Toaster } from "./ui/toaster";
 
 
 export default function Main() {

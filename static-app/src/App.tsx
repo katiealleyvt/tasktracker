@@ -4,7 +4,8 @@ import './App.css';
 import Main from './components/main';
 import { Provider } from './components/ui/provider';
 export const api_host =
-  process.env.VITE_API_HOST || "http://localhost:3000";
+  process.env.API_HOST || "http://localhost:3000";
+  console.log("Api host", api_host)
 function App() {
   return (
     <div className="App">
