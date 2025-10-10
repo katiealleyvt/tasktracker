@@ -8,9 +8,9 @@ import {
   useToken,
   type CardRootProps,
 } from "@chakra-ui/react";
-import { type Task } from "./models/task";
+import { type Task } from "../models/task";
 import { LuCheck, LuPencilLine, LuX } from "react-icons/lu";
-import type { Status } from "./models/enum";
+import type { Status } from "../models/enum";
 
 type StatusProps = CardRootProps & {
   status: Status;

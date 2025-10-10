@@ -1,16 +1,15 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-import { rewards } from "../data/sample-data";
-import type { Reward } from "./models/reward";
+import type { Reward } from "@/models/reward";
 import type { ObjectId } from "mongoose";
-import type { Task } from "./models/task";
 import {
   getAllRewards,
   createReward as createRewardAPI,
   updateReward as updateRewardAPI,
   deleteReward as deleteRewardAPI,
-} from "./data/reward-calls";
+} from "../data/reward-calls.ts"
+import { Task } from "@/models/task";
 
 export const RewardContext = createContext<{
   items: Reward[];

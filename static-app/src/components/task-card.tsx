@@ -18,7 +18,7 @@ import {
   LuTrash2,
   LuSave,
 } from "react-icons/lu";
-import { Status } from "./models/enum";
+import { Status } from "../models/enum";
 import { useEffect, useRef, useState } from "react";
 
 type TaskProps = CardRootProps & {

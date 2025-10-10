@@ -6,7 +6,7 @@ import StatusCard from "./status-card";
 import RewardCard from "./reward-card";
 import { toaster, Toaster } from "./ui/toaster";
 import NewCard from "./new-card";
-import { Status } from "../models/enum";
+import { Status } from "../models/enum.tsx"
 import { RewardContext } from "../contexts/reward-context";
 import { TaskContext } from "../contexts/task-context";
 import { WalletContext } from "../contexts/wallet-context";

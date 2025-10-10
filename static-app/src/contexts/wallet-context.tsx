@@ -1,9 +1,8 @@
 "use client";
 
+import { updateWallet } from "../data/wallet-calls.ts";
+import { Wallet } from "@/models/wallet";
 import { createContext, useEffect, useState } from "react";
-import { wallet } from "../data/sample-data";
-import type { Wallet } from "./models/wallet";
-import { updateWallet } from "./data/wallet-calls";
 
 export const WalletContext = createContext<{
   wallet: Wallet;
@@ -15,12 +14,10 @@ export const WalletContext = createContext<{
 
 export function WalletProvider({
   children,
-  initialWallet,
 }: {
   children: React.ReactNode;
-  initialWallet: Wallet;
 }) {
-  const [item, setItem] = useState<Wallet>(initialWallet);
+  const [item, setItem] = useState<Wallet>({amount: 0});
   useEffect(() => {
     const update = async () => {
       try {

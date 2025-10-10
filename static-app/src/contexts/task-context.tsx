@@ -1,16 +1,16 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
-import { tasks } from "../data/sample-data";
-import type { Task } from "./models/task";
+
+import type { ObjectId } from "mongoose";
+import { Status } from "@/models/enum";
+import { Task } from "@/models/task";
 import {
   updateTask as updateTaskAPI,
   createTask as createTaskAPI,
   deleteTask as deleteTaskAPI,
   getAllTasks,
-} from "./data/task-calls";
-import type { ObjectId } from "mongoose";
-import type { Status } from "./models/enum";
+} from "../data/task-calls.ts";
 
 export const TaskContext = createContext<{
   items: Task[];

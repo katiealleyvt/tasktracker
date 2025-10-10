@@ -1,5 +1,6 @@
 api/.env
 react-router/.env
-
+static-app/.env
 # Local Netlify folder
 .netlify
+static-app/.env
