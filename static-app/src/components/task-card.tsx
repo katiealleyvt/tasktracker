@@ -79,6 +79,7 @@ export default function TaskCard({
           <Box>
             {isEditing ? (
               <Input
+                fontSize="md"
                 value={thisTask.name}
                 onChange={(e) =>
                   setTask((prevTask) => ({ ...prevTask, name: e.target.value }))
@@ -92,6 +93,7 @@ export default function TaskCard({
           <Box w="30%">
             {isEditing ? (
               <NumberInput.Root
+                fontSize="md"
                 value={thisTask.points.toString()}
                 onValueChange={(valueString) =>
                   setTask((prevTask) => ({

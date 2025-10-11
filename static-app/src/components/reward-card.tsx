@@ -12,9 +12,9 @@ import {
   type CardRootProps,
 } from "@chakra-ui/react";
 import { LuPencilLine, LuSave, LuShoppingCart, LuTrash2 } from "react-icons/lu";
-import type { Reward } from "./models/reward";
 import { Toaster } from "./ui/toaster";
 import { useState, type JSX } from "react";
+import { Reward } from "models/reward";
 
 type RewardProps = CardRootProps & {
   reward: Reward;
@@ -71,6 +71,7 @@ export default function RewardCard({
           <Box>
             {isEditing ? (
               <Input
+                fontSize="md"
                 value={thisReward.name}
                 onChange={(e) =>
                   setReward((prev) => ({ ...prev, name: e.target.value }))
@@ -84,6 +85,7 @@ export default function RewardCard({
           <Box w="30%" textAlign={"right"}>
             {isEditing ? (
               <NumberInput.Root
+                fontSize="md"
                 value={thisReward.cost.toString()}
                 onValueChange={(valueString) =>
                   setReward((prev) => ({
