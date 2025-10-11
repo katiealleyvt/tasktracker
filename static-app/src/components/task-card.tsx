@@ -10,7 +10,6 @@ import {
   Input,
   NumberInput,
 } from "@chakra-ui/react";
-import { type Task } from "./models/task";
 import {
   LuCheck,
   LuCircleCheckBig,
@@ -20,6 +19,7 @@ import {
 } from "react-icons/lu";
 import { Status } from "../models/enum";
 import { useEffect, useRef, useState } from "react";
+import { Task } from "models/task";
 
 type TaskProps = CardRootProps & {
   task: Task;
