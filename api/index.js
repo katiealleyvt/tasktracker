@@ -9,6 +9,11 @@ const app = express();
 
 
 app.use(express.json());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+  })
+);
 const { auth } = require('express-oauth2-jwt-bearer');
 
 const port = process.env.PORT || 8080;
