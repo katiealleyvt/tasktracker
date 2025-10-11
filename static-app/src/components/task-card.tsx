@@ -63,7 +63,7 @@ export default function TaskCard({
           >
             {isEditing ? <LuSave /> : <LuPencilLine />}
           </IconButton>
-          {task.status != Status.Done && (
+          {task.status != Status.Done && !isEditing && (
             <IconButton
               size="sm"
               variant={"ghost"}

@@ -6,7 +6,7 @@ import StatusCard from "./status-card";
 import RewardCard from "./reward-card";
 import { toaster, Toaster } from "./ui/toaster";
 import NewCard from "./new-card";
-import { Status } from "../models/enum.tsx"
+import { Status } from "../models/enum.tsx";
 import { RewardContext } from "../contexts/reward-context";
 import { TaskContext } from "../contexts/task-context";
 import { WalletContext } from "../contexts/wallet-context";
@@ -31,7 +31,7 @@ export default function BoardColumn({ status, ...props }: Props) {
   );
 }
 
-function TaskColumn({ status, ...props }: Props) {
+export function TaskColumn({ status, ...props }: Props) {
   const { items, updateTask, createTask, deleteTask } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
   const taskCards = items.filter((item) => item.status === status);
@@ -99,7 +99,7 @@ function TaskColumn({ status, ...props }: Props) {
     </>
   );
 }
-function RewardColumn({ ...props }: GridItemProps) {
+export function RewardColumn({ ...props }: GridItemProps) {
   const { items, updateReward, createReward, deleteReward } =
     useContext(RewardContext);
   const { wallet, setWallet } = useContext(WalletContext);

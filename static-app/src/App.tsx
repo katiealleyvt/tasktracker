@@ -5,7 +5,7 @@ import Main from "./components/main";
 import { Provider } from "./components/ui/provider";
 import { Auth0Provider } from "@auth0/auth0-react";
 export const api_host =
-  process.env.REACT_APP_API_HOST || "http://localhost:3000";
+  process.env.REACT_APP_API_HOST || "http://localhost:8080";
 function App() {
   return (
     <div className="App">
