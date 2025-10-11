@@ -16,7 +16,7 @@ app.use(
 );
 // const { auth } = require('express-oauth2-jwt-bearer');
 
-// const port = process.env.PORT || 8080;
+ const port = process.env.PORT || 8080;
 
 // const jwtCheck = auth({
 //   audience: 'https://tasktracker-4qqn.onrender.com',
