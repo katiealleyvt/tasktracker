@@ -14,22 +14,22 @@ app.use(
     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
   })
 );
-const { auth } = require('express-oauth2-jwt-bearer');
+// const { auth } = require('express-oauth2-jwt-bearer');
 
-const port = process.env.PORT || 8080;
+// const port = process.env.PORT || 8080;
 
-const jwtCheck = auth({
-  audience: 'https://tasktracker-4qqn.onrender.com',
-  issuerBaseURL: 'https://dev-lsuvai0lfhu3sxhm.us.auth0.com/',
-  tokenSigningAlg: 'RS256'
-});
+// const jwtCheck = auth({
+//   audience: 'https://tasktracker-4qqn.onrender.com',
+//   issuerBaseURL: 'https://dev-lsuvai0lfhu3sxhm.us.auth0.com/',
+//   tokenSigningAlg: 'RS256'
+// });
 
-// enforce on all endpoints
-app.use(jwtCheck);
+// // enforce on all endpoints
+// app.use(jwtCheck);
 
-app.get('/authorized', function (req, res) {
-    res.send('Secured Resource');
-});
+// app.get('/authorized', function (req, res) {
+//     res.send('Secured Resource');
+// });
 
 
 app.listen(port, () => {

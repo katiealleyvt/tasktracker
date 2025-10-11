@@ -8,7 +8,7 @@ export const getData = async (url: string, method: string, token: string, action
           method: method,
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+           // "Authorization": `Bearer ${token}`,
 
           },
         });
@@ -29,7 +29,7 @@ export const postData = async (url: string, data: any, method: string, token: st
       method: method,
       headers: {
         "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
+         // "Authorization": `Bearer ${token}`,
 
       },
       body: JSON.stringify(data),
