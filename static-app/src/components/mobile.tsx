@@ -2,75 +2,52 @@ import BoardColumn, { RewardColumn, TaskColumn } from "./board-column";
 import { Status } from "models/enum";
 import { Toaster } from "./ui/toaster";
 import { Container, Tabs, VStack } from "@chakra-ui/react";
+import { useState } from "react";
 
 export default function Mobile() {
+  const [selected, setSelected] = useState<Status>(Status.Daily);
   return (
     <>
       <Tabs.Root
         lazyMount
         unmountOnExit
-        defaultValue={Status.Daily}
+        defaultValue={selected}
         variant="plain"
+        onValueChange={(details) => setSelected(details.value as Status)}
       >
         <Tabs.List justifyContent={"space-around"} display="flex">
-          <Tabs.Trigger
-            value={Status.Daily}
-            bg="status.daily"
-            color={"black"}
-            w="100%"
-            borderRadius="0"
-            border="solid white 1px"
-            justifyContent={"center"}
-          >
-            {Status.Daily}
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value={Status.Todo}
-            bg="status.todo"
-            color={"black"}
-            w="100%"
-            borderRadius="0"
-            border="solid white 1px"
-            justifyContent={"center"}
-          >
-            {Status.Todo}
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value={Status.Done}
-            bg="status.done"
-            color={"black"}
-            w="100%"
-            borderRadius="0"
-            border="solid white 1px"
-            justifyContent={"center"}
-          >
-            {Status.Done}
-          </Tabs.Trigger>
-
-          <Tabs.Trigger
-            value={Status.Reward}
-            bg="status.rewards"
-            color={"black"}
-            w="100%"
-            borderRadius="0"
-            border="solid white 1px"
-            justifyContent={"center"}
-          >
-            {Status.Reward}
-          </Tabs.Trigger>
+          {Object.values(Status).map((status) => {
+            if (status !== Status.Archive) {
+              return (
+                <Tabs.Trigger
+                  value={status}
+                  bg={`status.${status.toLowerCase()}`}
+                  color={"black"}
+                  w="100%"
+                  borderRadius="0"
+                  border="solid white 1px"
+                  justifyContent={"center"}
+                  opacity={selected === status ? "1" : ".5"}
+                  borderBottomRightRadius={"0.7rem"}
+                  borderBottomLeftRadius={"0.7rem"}
+                >
+                  {status}
+                </Tabs.Trigger>
+              );
+            }
+            return undefined;
+          })}
         </Tabs.List>
-        <Tabs.Content value={Status.Daily}>
-          <TaskColumn status={Status.Daily} />
-        </Tabs.Content>
-        <Tabs.Content value={Status.Todo}>
-          <TaskColumn status={Status.Todo} />
-        </Tabs.Content>
-        <Tabs.Content value={Status.Done}>
-          <TaskColumn status={Status.Done} />
-        </Tabs.Content>
-        <Tabs.Content value={Status.Reward}>
-          <RewardColumn />
-        </Tabs.Content>
+        {Object.values(Status).map((status) => {
+          if (status !== Status.Archive) {
+            return (
+              <Tabs.Content value={status} paddingTop="0">
+                <BoardColumn status={status} padding="5" hideTitle={true} />
+              </Tabs.Content>
+            );
+          }
+          return undefined;
+        })}
       </Tabs.Root>
       <Toaster />
     </>

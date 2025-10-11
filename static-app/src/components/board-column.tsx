@@ -15,12 +15,13 @@ import { Task } from "../models/task";
 
 type Props = GridItemProps & {
   status: Status;
+  hideTitle?: boolean;
 };
-export default function BoardColumn({ status, ...props }: Props) {
+export default function BoardColumn({ status, hideTitle, ...props }: Props) {
   return (
-    <GridItem>
+    <GridItem {...props}>
       <VStack gap="5" w="100%">
-        <StatusCard status={status} />
+        {!hideTitle && <StatusCard status={status} />}
         {status !== Status.Reward ? (
           <TaskColumn status={status} />
         ) : (
