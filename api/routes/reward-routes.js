@@ -6,7 +6,16 @@ module.exports = router;
 const Model = require("../models/reward");
 //Post Method
 router.post("/post", async (req, res) => {
-  console.log(req.body);
+  if (
+    req.body.name == undefined ||
+    typeof req.body.cost !== "number" ||
+    req.body.isArchived == undefined
+  ) {
+    console.log(req.body);
+    return res
+      .status(400)
+      .json({ message: "Missing or invalid required fields" });
+  }
 
   const data = new Model({
     name: req.body.name,
