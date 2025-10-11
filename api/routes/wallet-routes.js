@@ -6,7 +6,6 @@ module.exports = router;
 const Model = require("../models/wallet");
 //Post Method
 router.post("/post", async (req, res) => {
-  console.log(req.body);
   if (req.body.amount === undefined || typeof req.body.amount !== "number") {
     return res
       .status(400)

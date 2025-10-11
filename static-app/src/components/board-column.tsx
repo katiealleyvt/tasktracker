@@ -32,16 +32,19 @@ export default function BoardColumn({ status, ...props }: Props) {
 }
 
 export function TaskColumn({ status, ...props }: Props) {
-  const { items, updateTask, createTask, deleteTask } = useContext(TaskContext);
+  const { items, updateTask, createTask, deleteTask, duplicateTask } =
+    useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
   const taskCards = items.filter((item) => item.status === status);
 
   function completeTask(task: Task) {
+    if (task.status === Status.Daily) {
+      duplicateTask(task);
+    }
     updateTask(task._id!, { status: Status.Done });
-    setWallet((prevWallet) => ({
-      ...prevWallet,
-      amount: prevWallet.amount + task.points,
-    }));
+    setWallet({
+      amount: wallet.amount + task.points,
+    });
     toaster.create({
       title: "Task completed!",
       duration: 3000,

@@ -52,6 +52,12 @@ router.get("/getOne/:id", async (req, res) => {
 
 //Update by ID Method
 router.patch("/update/:id", async (req, res) => {
+  if (!req.body) {
+    console.log(req.body);
+    return res
+      .status(400)
+      .json({ message: "Missing or invalid required fields" });
+  }
   try {
     const id = req.params.id;
     const updatedData = req.body;

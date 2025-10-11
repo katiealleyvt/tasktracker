@@ -1,46 +1,44 @@
 "use client";
 
-import { updateWallet } from "../data/wallet-calls.ts";
-import { Wallet } from "@/models/wallet";
+import { getWallet, updateWallet } from "../data/wallet-calls.ts";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useDidMountEffect } from "hooks/useDidMountEffect.tsx";
+import { Wallet } from "models/wallet.tsx";
 import { createContext, useEffect, useState } from "react";
 
 export const WalletContext = createContext<{
   wallet: Wallet;
-  setWallet: React.Dispatch<React.SetStateAction<Wallet>>;
+  setWallet: (wallet: Wallet) => void;
 }>({
   wallet: { amount: 0 },
   setWallet: () => {},
 });
 
-export function WalletProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState('');
+export function WalletProvider({ children }: { children: React.ReactNode }) {
+  const [item, setItem] = useState<Wallet>({ amount: 0 });
 
+  const update = async (walletItem: Wallet) => {
+    console.log("walletItem", walletItem);
+    try {
+      const wallet = await updateWallet({ ...walletItem }, "");
+    } catch (error) {
+      console.error("Error updating wallet:", error);
+    }
+  };
   useEffect(() => {
-    const getToken = async () => {
-      const accessToken = await getAccessTokenSilently();
-      setToken(accessToken);
+    const fetchWallet = async () => {
+      const wallet = await getWallet();
+      console.log("wallet", wallet);
+      setItem(wallet);
     };
-    if (isAuthenticated) getToken();
-  }, [isAuthenticated, getAccessTokenSilently]);
-  const [item, setItem] = useState<Wallet>({amount: 0});
-  useEffect(() => {
-    const update = async () => {
-      try {
-        const wallet = await updateWallet({ ...item }, token);
-      } catch (error) {
-        console.error("Error updating wallet:", error);
-      }
-    };
-    update();
-  }, [item]);
+    fetchWallet();
+  }, []);
+  const setData = (w: Wallet) => {
+    setItem(w);
+    update(w);
+  };
   return (
-    <WalletContext.Provider value={{ wallet: item, setWallet: setItem }}>
+    <WalletContext.Provider value={{ wallet: item, setWallet: setData }}>
       {children}
     </WalletContext.Provider>
   );

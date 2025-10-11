@@ -19,18 +19,20 @@ export const TaskContext = createContext<{
   updateTask: (id: ObjectId, updates: Partial<Task>) => Promise<void>;
   createTask: (status: Status) => Promise<void>;
   deleteTask: (id: ObjectId) => Promise<void>;
+  duplicateTask: { (task: Task): void };
 }>({
   items: [],
   setItems: () => {},
   updateTask: async () => {},
   createTask: async () => {},
   deleteTask: async () => {},
+  duplicateTask: () => {},
 });
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<Task[]>([]);
-const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
-  const [token, setToken] = useState('');
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [token, setToken] = useState("");
 
   useEffect(() => {
     const getToken = async () => {
@@ -39,7 +41,7 @@ const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
     };
     if (isAuthenticated) getToken();
   }, [isAuthenticated, getAccessTokenSilently]);
-  
+
   useEffect(() => {
     const fetchTasks = async () => {
       try {
@@ -68,11 +70,14 @@ const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   };
   const createTask = async (status: Status) => {
     try {
-      const updatedTask = await createTaskAPI({
-        name: "",
-        points: 0,
-        status: status,
-      },token);
+      const updatedTask = await createTaskAPI(
+        {
+          name: "",
+          points: 0,
+          status: status,
+        },
+        token
+      );
       setItems((prevItems) => [...prevItems, updatedTask]);
       return updatedTask;
     } catch (error) {
@@ -82,7 +87,7 @@ const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   };
   const deleteTask = async (id: ObjectId) => {
     try {
-      await deleteTaskAPI(id,token);
+      await deleteTaskAPI(id, token);
       setItems((prevItems) => prevItems.filter((item) => item._id !== id));
       return;
     } catch (error) {
@@ -90,9 +95,33 @@ const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
       throw error;
     }
   };
+  const duplicateTask = async (task: Task) => {
+    try {
+      const updatedTask = await createTaskAPI(
+        {
+          name: task.name,
+          points: task.points,
+          status: task.status,
+        },
+        token
+      );
+      setItems((prevItems) => [...prevItems, updatedTask]);
+      return updatedTask;
+    } catch (error) {
+      console.error("Failed to update task:", error);
+      throw error;
+    }
+  };
   return (
     <TaskContext.Provider
-      value={{ items, setItems, updateTask, createTask, deleteTask }}
+      value={{
+        items,
+        setItems,
+        updateTask,
+        createTask,
+        deleteTask,
+        duplicateTask,
+      }}
     >
       {children}
     </TaskContext.Provider>

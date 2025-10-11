@@ -1,14 +1,10 @@
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useEffect } from "react";
 
-export const getData = async (
-  url: string,
-  method: string,
-  actionName?: string
-) => {
+export const getData = async (url: string, actionName?: string) => {
   try {
     const response = await fetch(url, {
-      method: method,
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         // "Authorization": `Bearer ${token}`,
@@ -44,6 +40,25 @@ export const postData = async (
     }
     const updatedItem = await response.json();
     return updatedItem;
+  } catch (error) {
+    console.error(actionName ? `Error ${actionName}` : "Error: ", error);
+    throw error;
+  }
+};
+
+export const deleteData = async (url: string, actionName?: string) => {
+  try {
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        // "Authorization": `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(actionName ? `Failed ${actionName}` : "Failed action.");
+    }
+    return;
   } catch (error) {
     console.error(actionName ? `Error ${actionName}` : "Error: ", error);
     throw error;

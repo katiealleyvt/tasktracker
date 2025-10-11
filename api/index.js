@@ -7,16 +7,16 @@ const rewardRoutes = require("./routes/reward-routes");
 const walletRoutes = require("./routes/wallet-routes");
 const app = express();
 
-
 app.use(express.json());
 app.use(
   cors({
     origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: true,
   })
 );
 // const { auth } = require('express-oauth2-jwt-bearer');
 
- const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 // const jwtCheck = auth({
 //   audience: 'https://tasktracker-4qqn.onrender.com',
@@ -30,7 +30,6 @@ app.use(
 // app.get('/authorized', function (req, res) {
 //     res.send('Secured Resource');
 // });
-
 
 app.listen(port, () => {
   console.log(`Server Started at ${port}`);
@@ -53,8 +52,9 @@ app.use("/api/tasks", taskRoutes);
 app.use("/api/rewards", rewardRoutes);
 app.use("/api/wallet", walletRoutes);
 app.router.use((err, req, res, next) => {
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).json({ error: 'Invalid token' });
+  console.log(`Incoming request from origin: ${req.headers.origin}`);
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({ error: "Invalid token" });
   } else {
     next(err);
   }
