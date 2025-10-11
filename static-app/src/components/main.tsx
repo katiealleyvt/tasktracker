@@ -75,9 +75,11 @@ export default function Main() {
             fontWeight="700"
           >
             <Heading>Task Tracker</Heading>
-            <LoginButton />
           </HStack>
         </VStack>
+        <Container py="10" maxW={{ base: "100%", "2xl": "80%" }}>
+          <LoginButton size="2xl" />
+        </Container>
       </>
     );
   }
