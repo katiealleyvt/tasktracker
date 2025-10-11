@@ -19,12 +19,16 @@ import { WalletContext } from "../contexts/wallet-context";
 import BoardColumn from "./board-column";
 import { Status } from "../models/enum";
 import { Toaster } from "./ui/toaster";
+import LoginButton from "./ui/login-button";
+import LogoutButton from "./ui/logout-button";
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 export default function Main() {
   const { wallet, setWallet } = useContext(WalletContext);
-
-  return (
+  const { isAuthenticated} = useAuth0();
+if(isAuthenticated){
+return (
     <>
       <VStack bg={"brand.nav"} height={16} w="100%">
         <HStack
@@ -46,6 +50,7 @@ export default function Main() {
           >
             <LuCoins /> {wallet.amount}
           </Flex>
+<LogoutButton/>
         </HStack>
       </VStack>
       <Container py="10" maxW={{ base: "100%", "2xl": "80%" }}>
@@ -62,4 +67,26 @@ export default function Main() {
       </Container>
     </>
   );
+}
+else{
+  return (
+    <>
+      <VStack bg={"brand.nav"} height={16} w="100%">
+        <HStack
+          color="whiteAlpha.900"
+          px="2rem"
+          w="70%"
+          justify={"space-between"}
+          alignContent={"center"}
+          h="100%"
+          fontWeight="700"
+        >
+          <Heading>Task Tracker</Heading>
+<LoginButton/>
+        </HStack>
+      </VStack>
+    </>
+  );
+}
+  
 }

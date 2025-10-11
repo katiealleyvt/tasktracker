@@ -11,6 +11,7 @@ import {
   deleteTask as deleteTaskAPI,
   getAllTasks,
 } from "../data/task-calls.ts";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const TaskContext = createContext<{
   items: Task[];
@@ -28,11 +29,21 @@ export const TaskContext = createContext<{
 
 export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<Task[]>([]);
+const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [token, setToken] = useState('');
 
+  useEffect(() => {
+    const getToken = async () => {
+      const accessToken = await getAccessTokenSilently();
+      setToken(accessToken);
+    };
+    if (isAuthenticated) getToken();
+  }, [isAuthenticated, getAccessTokenSilently]);
+  
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const allTasks = await getAllTasks();
+        const allTasks = await getAllTasks(token);
         setItems(allTasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -43,7 +54,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
 
   const updateTask = async (id: ObjectId, updates: Partial<Task>) => {
     try {
-      const updatedTask = await updateTaskAPI(id, updates);
+      const updatedTask = await updateTaskAPI(id, updates, token);
       setItems((prevItems) =>
         prevItems.map((item) =>
           item._id === id ? { ...item, ...updatedTask } : item
@@ -61,7 +72,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         name: "",
         points: 0,
         status: status,
-      });
+      },token);
       setItems((prevItems) => [...prevItems, updatedTask]);
       return updatedTask;
     } catch (error) {
@@ -71,7 +82,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   };
   const deleteTask = async (id: ObjectId) => {
     try {
-      await deleteTaskAPI(id);
+      await deleteTaskAPI(id,token);
       setItems((prevItems) => prevItems.filter((item) => item._id !== id));
       return;
     } catch (error) {

@@ -7,14 +7,28 @@ const rewardRoutes = require("./routes/reward-routes");
 const walletRoutes = require("./routes/wallet-routes");
 const app = express();
 
+
 app.use(express.json());
-app.use(
-  cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
-  })
-);
-app.listen(3000, () => {
-  console.log(`Server Started at ${3000}`);
+const { auth } = require('express-oauth2-jwt-bearer');
+
+const port = process.env.PORT || 8080;
+
+const jwtCheck = auth({
+  audience: 'https://tasktracker-4qqn.onrender.com',
+  issuerBaseURL: 'https://dev-lsuvai0lfhu3sxhm.us.auth0.com/',
+  tokenSigningAlg: 'RS256'
+});
+
+// enforce on all endpoints
+app.use(jwtCheck);
+
+app.get('/authorized', function (req, res) {
+    res.send('Secured Resource');
+});
+
+
+app.listen(port, () => {
+  console.log(`Server Started at ${port}`);
 });
 const mongoString = process.env.DB_CONN_STR;
 if (mongoString === undefined) {
@@ -33,3 +47,10 @@ database.once("connected", () => {
 app.use("/api/tasks", taskRoutes);
 app.use("/api/rewards", rewardRoutes);
 app.use("/api/wallet", walletRoutes);
+app.router.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).json({ error: 'Invalid token' });
+  } else {
+    next(err);
+  }
+});

@@ -2,6 +2,7 @@
 
 import { updateWallet } from "../data/wallet-calls.ts";
 import { Wallet } from "@/models/wallet";
+import { useAuth0 } from "@auth0/auth0-react";
 import { createContext, useEffect, useState } from "react";
 
 export const WalletContext = createContext<{
@@ -17,11 +18,21 @@ export function WalletProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    const getToken = async () => {
+      const accessToken = await getAccessTokenSilently();
+      setToken(accessToken);
+    };
+    if (isAuthenticated) getToken();
+  }, [isAuthenticated, getAccessTokenSilently]);
   const [item, setItem] = useState<Wallet>({amount: 0});
   useEffect(() => {
     const update = async () => {
       try {
-        const wallet = await updateWallet({ ...item });
+        const wallet = await updateWallet({ ...item }, token);
       } catch (error) {
         console.error("Error updating wallet:", error);
       }
