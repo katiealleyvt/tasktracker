@@ -1,6 +1,6 @@
 import { type GridItemProps, GridItem, VStack } from "@chakra-ui/react";
 import TaskCard from "./task-card";
-import { useContext, useState } from "react";
+import { Suspense, useContext, useMemo, useState } from "react";
 import { Droppable } from "./droppable";
 import StatusCard from "./status-card";
 import RewardCard from "./reward-card";
@@ -12,6 +12,7 @@ import { TaskContext } from "../contexts/task-context";
 import { WalletContext } from "../contexts/wallet-context";
 import { Reward } from "../models/reward";
 import { Task } from "../models/task";
+import { LoadingCard } from "./ui/loading.tsx";
 
 type Props = GridItemProps & {
   status: Status;
@@ -33,23 +34,38 @@ export default function BoardColumn({ status, hideTitle, ...props }: Props) {
 }
 
 export function TaskColumn({ status, ...props }: Props) {
-  const { items, updateTask, createTask, deleteTask, duplicateTask } =
-    useContext(TaskContext);
+  const {
+    items,
+    isLoading,
+    updateTask,
+    createTask,
+    deleteTask,
+    duplicateTask,
+  } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
   const taskCards = items.filter((item) => item.status === status);
+  // calculate task points averages to pass to each card
+  const pointAvg = useMemo(() => {
+    let sum = 0;
+    taskCards.forEach((f) => (sum += f.points));
+    console.log(sum / taskCards.length);
+    return sum / taskCards.length;
+  }, [taskCards]);
 
   function completeTask(task: Task) {
     if (task.status === Status.Daily) {
       duplicateTask(task);
     }
     updateTask(task._id!, { status: Status.Done });
+    const newAmount = wallet.amount + task.points;
     setWallet({
-      amount: wallet.amount + task.points,
+      amount: newAmount,
     });
     toaster.create({
-      title: "Task completed!",
-      duration: 3000,
+      title: `${task.points} 🪙 Earned 🎉 🎉 🎉`,
+      duration: 6000,
       type: "success",
+      description: `Task completed! You now have ${newAmount} 🪙 in your wallet.`,
     });
   }
 
@@ -62,9 +78,9 @@ export function TaskColumn({ status, ...props }: Props) {
   }
 
   function removeCard(task: Task) {
-    deleteTask(task._id!);
+    archiveTask(task);
     toaster.create({
-      title: "Task deleted.",
+      title: "Task removed.",
       duration: 3000,
     });
   }
@@ -84,29 +100,47 @@ export function TaskColumn({ status, ...props }: Props) {
       duration: 3000,
     });
   }
+  console.log("items", items);
   return (
     <>
-      {taskCards.map((item) => (
-        <TaskCard
-          task={item}
-          key={item._id?.toString() ?? item.name}
-          completeTask={(item) => {
-            completeTask(item);
-          }}
-          archiveTask={(item) => {
-            removeCard(item);
-          }}
-          updateTask={(item) => updateCard(item)}
-        />
-      ))}
-      <NewCard createNew={createCard} />
+      {!isLoading ? (
+        <>
+          {taskCards.map((item) => (
+            <TaskCard
+              task={item}
+              key={item._id?.toString() ?? item.name}
+              completeTask={(item) => {
+                completeTask(item);
+              }}
+              archiveTask={(item) => {
+                removeCard(item);
+              }}
+              updateTask={(item) => updateCard(item)}
+              pointAvg={pointAvg}
+            />
+          ))}
+          <NewCard createNew={createCard} />
+        </>
+      ) : (
+        <>
+          <LoadingCard />
+        </>
+      )}
     </>
   );
 }
 export function RewardColumn({ ...props }: GridItemProps) {
-  const { items, updateReward, createReward, deleteReward } =
+  const { items, isLoading, updateReward, createReward, deleteReward } =
     useContext(RewardContext);
   const { wallet, setWallet } = useContext(WalletContext);
+
+  const costAvg = useMemo(() => {
+    let sum = 0;
+    items.forEach((f) => (sum += f.cost));
+    console.log(sum / items.length);
+    return sum / items.length;
+  }, [items]);
+
   function buyReward(reward: Reward) {
     if (wallet.amount < reward.cost) {
       toaster.create({
@@ -116,7 +150,7 @@ export function RewardColumn({ ...props }: GridItemProps) {
       });
       return;
     }
-    deleteReward(reward._id!);
+    archiveReward(reward);
     setWallet({ amount: wallet.amount - reward.cost });
     toaster.create({
       title: "Reward purchased!",
@@ -125,9 +159,9 @@ export function RewardColumn({ ...props }: GridItemProps) {
     });
   }
   function archiveReward(reward: Reward) {
-    deleteReward(reward._id!);
+    updateReward(reward._id!, { isArchived: true });
     toaster.create({
-      title: "Reward archived.",
+      title: "Reward removed.",
       duration: 3000,
     });
   }
@@ -147,19 +181,26 @@ export function RewardColumn({ ...props }: GridItemProps) {
   }
   return (
     <>
-      {items.map((item) =>
-        item.isArchived ? undefined : (
-          <RewardCard
-            reward={item}
-            key={item._id?.toString() ?? item.name}
-            buyReward={() => buyReward(item)}
-            archiveReward={() => archiveReward(item)}
-            updateReward={(item) => updateCard(item)}
-            {...props}
-          />
-        )
+      {!isLoading ? (
+        <>
+          {items.map((item) =>
+            item.isArchived ? undefined : (
+              <RewardCard
+                reward={item}
+                key={item._id?.toString() ?? item.name}
+                buyReward={() => buyReward(item)}
+                archiveReward={() => archiveReward(item)}
+                updateReward={(item) => updateCard(item)}
+                costAvg={costAvg}
+                {...props}
+              />
+            )
+          )}
+          <NewCard createNew={createCard} />
+        </>
+      ) : (
+        <LoadingCard />
       )}
-      <NewCard createNew={createCard} />
     </>
   );
 }

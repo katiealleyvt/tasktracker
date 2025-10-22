@@ -3,8 +3,8 @@
 import { createContext, useEffect, useState } from "react";
 
 import type { ObjectId } from "mongoose";
-import { Status } from "@/models/enum";
-import { Task } from "@/models/task";
+import { Status } from "../models/enum";
+import { Task } from "../models/task";
 import {
   updateTask as updateTaskAPI,
   createTask as createTaskAPI,
@@ -16,6 +16,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const TaskContext = createContext<{
   items: Task[];
   setItems: React.Dispatch<React.SetStateAction<Task[]>>;
+  isLoading: boolean;
   updateTask: (id: ObjectId, updates: Partial<Task>) => Promise<void>;
   createTask: (status: Status) => Promise<void>;
   deleteTask: (id: ObjectId) => Promise<void>;
@@ -23,6 +24,7 @@ export const TaskContext = createContext<{
 }>({
   items: [],
   setItems: () => {},
+  isLoading: true,
   updateTask: async () => {},
   createTask: async () => {},
   deleteTask: async () => {},
@@ -33,7 +35,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<Task[]>([]);
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [token, setToken] = useState("");
-
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     const getToken = async () => {
       const accessToken = await getAccessTokenSilently();
@@ -49,10 +51,12 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
         setItems(allTasks);
       } catch (error) {
         console.error("Error fetching tasks:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTasks();
-  }, []);
+  }, [token]);
 
   const updateTask = async (id: ObjectId, updates: Partial<Task>) => {
     try {
@@ -117,6 +121,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       value={{
         items,
         setItems,
+        isLoading,
         updateTask,
         createTask,
         deleteTask,

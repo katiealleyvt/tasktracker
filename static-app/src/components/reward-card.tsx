@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { LuPencilLine, LuSave, LuShoppingCart, LuTrash2 } from "react-icons/lu";
 import { Toaster } from "./ui/toaster";
-import { useState, type JSX } from "react";
+import { useMemo, useState, type JSX } from "react";
 import { Reward } from "models/reward";
 
 type RewardProps = CardRootProps & {
@@ -21,6 +21,7 @@ type RewardProps = CardRootProps & {
   buyReward: (reward: Reward) => void;
   archiveReward: (reward: Reward) => void;
   updateReward: (reward: Reward) => void;
+  costAvg: number;
 };
 
 export default function RewardCard({
@@ -28,10 +29,21 @@ export default function RewardCard({
   buyReward,
   archiveReward,
   updateReward,
+  costAvg,
   ...props
 }: RewardProps) {
   const [isEditing, setIsEditing] = useState(reward.name === "");
   const [thisReward, setReward] = useState<Reward>(reward);
+
+  const lightValue = useMemo(() => {
+    const percent =
+      (thisReward.cost - costAvg) / ((thisReward.cost + costAvg) / 2);
+    // lowest 95, highest 70, median 82.5
+    const value = (percent * 2 * -1 + 1) * 12.5 + 60;
+    if (value > 95) return 95;
+    if (value < 70) return 70;
+    return Math.round(value);
+  }, [costAvg, thisReward.cost]);
 
   function handleEditToggle() {
     if (isEditing) {
@@ -40,7 +52,7 @@ export default function RewardCard({
     setIsEditing((prev) => !prev);
   }
   return (
-    <Card.Root w="100%" {...props}>
+    <Card.Root w="100%" {...props} bg={`hsla(330, 100%, ${lightValue}%, 1.00)`}>
       <Card.Header py="0.5" px="0.5">
         <HStack justifyContent={"end"} w="100%">
           <IconButton

@@ -35,6 +35,7 @@ app.listen(port, () => {
   console.log(`Server Started at ${port}`);
 });
 const mongoString = process.env.DB_CONN_STR;
+console.log("mongoString", mongoString);
 if (mongoString === undefined) {
   throw new Error("DB_CONN_STR is not defined in environment variables");
 }
