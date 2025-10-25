@@ -151,7 +151,7 @@ export default function TaskCard({
                     placeholder="Insert Task"
                   />
                 ) : (
-                  <Heading>{thisTask.name}</Heading>
+                  <Heading fontSize="lg">{thisTask.name}</Heading>
                 )}
               </Box>
               <Box w="30%">
@@ -172,7 +172,9 @@ export default function TaskCard({
                     <NumberInput.Input />
                   </NumberInput.Root>
                 ) : (
-                  <Heading textAlign={"right"}>{thisTask.points}</Heading>
+                  <Heading textAlign={"right"} fontSize="lg">
+                    {thisTask.points}
+                  </Heading>
                 )}
               </Box>
             </HStack>
