@@ -1,18 +1,19 @@
-import { type GridItemProps, GridItem, VStack } from "@chakra-ui/react";
+import { type GridItemProps, GridItem, HStack, VStack } from "@chakra-ui/react";
 import TaskCard from "./task-card";
-import { Suspense, useContext, useMemo, useState } from "react";
+import { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { Droppable } from "./droppable";
 import StatusCard from "./status-card";
 import RewardCard from "./reward-card";
 import { toaster, Toaster } from "./ui/toaster";
 import NewCard from "./new-card";
-import { Status } from "../models/enum.tsx";
+import { FilterType, Status } from "../models/enum.tsx";
 import { RewardContext } from "../contexts/reward-context";
 import { TaskContext } from "../contexts/task-context";
 import { WalletContext } from "../contexts/wallet-context";
 import { Reward } from "../models/reward";
 import { Task } from "../models/task";
 import { LoadingCard } from "./ui/loading.tsx";
+import FilterRow, { Filter } from "./filter-row.tsx";
 
 type Props = GridItemProps & {
   status?: Status;
@@ -34,24 +35,19 @@ export default function BoardColumn({ status, hideTitle, ...props }: Props) {
 }
 
 export function TaskColumn({ status, ...props }: Props) {
-  const {
-    items,
-    isLoading,
-    updateTask,
-    createTask,
-    deleteTask,
-    duplicateTask,
-  } = useContext(TaskContext);
+  const { items, isLoading, updateTask, createTask, duplicateTask } =
+    useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
-  console.log("status", status);
-  const taskCards = status
-    ? items.filter((item) => item.status === status)
-    : items.filter(
-        (item) =>
-          item.status !== Status.Archive &&
-          item.status !== Status.Reward &&
-          item.status !== Status.Done
-      );
+  const [taskCards, setTaskCards] = useState(
+    status
+      ? items.filter((item) => item.status === status)
+      : items.filter(
+          (item) =>
+            item.status !== Status.Archive &&
+            item.status !== Status.Reward &&
+            item.status !== Status.Done
+        )
+  );
   // calculate task points averages to pass to each card
   const pointAvg = useMemo(() => {
     let sum = 0;
@@ -59,6 +55,22 @@ export function TaskColumn({ status, ...props }: Props) {
     return sum / taskCards.length;
   }, [taskCards]);
 
+  const [filters, setFilters] = useState<Filter[]>([
+    {
+      name: "Daily",
+      value: Status.Daily,
+      color: "pink.400",
+      isSelected: true,
+      type: FilterType.Status,
+    },
+    {
+      name: "Todo",
+      value: Status.Todo,
+      color: "blue.400",
+      isSelected: true,
+      type: FilterType.Status,
+    },
+  ]);
   function completeTask(task: Task) {
     if (task.status === Status.Daily) {
       duplicateTask(task);
@@ -107,10 +119,45 @@ export function TaskColumn({ status, ...props }: Props) {
       duration: 3000,
     });
   }
+  function filterTasks(filter: Filter, isSelected: boolean) {
+    console.log("filters", filters);
+    let filteredItems: Task[] = [];
+    if (filter.type === FilterType.Status) {
+      if (isSelected) {
+        filteredItems = items.filter(
+          (i) => i.status === (filter.value as Status)
+        );
+      }
+    }
+    filters.forEach((f) => {
+      if (f !== filter && f.isSelected) {
+        if (f.type === FilterType.Status) {
+          const otherItems = items.filter(
+            (i) => i.status === (f.value as Status)
+          );
+          filteredItems = filteredItems.concat(otherItems);
+        }
+      }
+    });
+
+    setTaskCards(filteredItems);
+    setFilters((prev) =>
+      prev.map((p) => {
+        return p === filter ? { ...p, isSelected } : p;
+      })
+    );
+  }
   return (
     <>
       {!isLoading ? (
         <>
+          <HStack w="100%">
+            <FilterRow
+              filters={filters}
+              defaultValue={[Status.Daily.toString(), Status.Todo.toString()]}
+              action={(filter, isSelected) => filterTasks(filter, isSelected)}
+            />
+          </HStack>
           {taskCards.map((item) => (
             <TaskCard
               task={item}

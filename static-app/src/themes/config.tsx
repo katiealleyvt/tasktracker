@@ -13,6 +13,7 @@ const config = defineConfig({
           nav: { value: "#1f142e" },
           mutedBlack: { value: "#141314" },
           darkPurple: { value: "#2e1e47" },
+          lightPurple: { value: "#c2ade4" },
         },
       },
     },

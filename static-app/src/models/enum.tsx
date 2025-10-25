@@ -5,3 +5,6 @@ export enum Status {
   Reward = "Rewards",
   Archive = "Archive",
 }
+export enum FilterType {
+  Status,
+}

@@ -9,6 +9,7 @@ import {
   Editable,
   Input,
   NumberInput,
+  Tag,
 } from "@chakra-ui/react";
 import {
   LuCheck,
@@ -16,6 +17,9 @@ import {
   LuPencilLine,
   LuTrash2,
   LuSave,
+  LuSun,
+  LuTableOfContents,
+  LuClipboardList,
 } from "react-icons/lu";
 import { Status } from "../models/enum";
 import {
@@ -58,10 +62,10 @@ export default function TaskCard({
   const lightValue = useMemo(() => {
     const percent =
       (thisTask.points - pointAvg) / ((thisTask.points + pointAvg) / 2);
-    // lowest 95, highest 60, median 77.5
+    // lowest 95, highest 78, median 28
     const value = (percent * 2 * -1 + 1) * 17.5 + 60;
     if (value > 95) return 95;
-    if (value < 60) return 60;
+    if (value < 78) return 78;
     return Math.round(value);
   }, [pointAvg, thisTask.points]);
   return isMobile ? (
@@ -83,9 +87,34 @@ export default function TaskCard({
           },
         ]}
       >
-        <Card.Root bg={`hsla(263, 50%, ${lightValue}%, 1.00)`}>
+        <Card.Root bg={`hsla(102, 50%, ${lightValue}%, 1.00)`}>
           <Card.Header py="0.5" px="0.5">
-            <HStack justifyContent={"end"} w="100%">
+            <HStack justifyContent={"space-between"} w="100%">
+              {(thisTask.status === Status.Daily ||
+                thisTask.status === Status.Todo) && (
+                <Tag.Root
+                  marginLeft="2"
+                  bgColor={
+                    thisTask.status === Status.Daily
+                      ? "yellow.100"
+                      : "green.100"
+                  }
+                  size="lg"
+                >
+                  <Tag.Label
+                    display="inline-flex"
+                    alignItems="center"
+                    gap="1.5"
+                  >
+                    {thisTask.status === Status.Daily ? (
+                      <LuSun />
+                    ) : (
+                      <LuClipboardList />
+                    )}
+                    {thisTask.status}
+                  </Tag.Label>
+                </Tag.Root>
+              )}
               <IconButton
                 size="sm"
                 variant={"ghost"}
@@ -100,6 +129,7 @@ export default function TaskCard({
               <Box>
                 {isEditing ? (
                   <Input
+                    bgColor="whiteAlpha.800"
                     fontSize="md"
                     value={thisTask.name}
                     onChange={(e) =>
@@ -118,6 +148,7 @@ export default function TaskCard({
                 {isEditing ? (
                   <NumberInput.Root
                     fontSize="md"
+                    bgColor="whiteAlpha.800"
                     value={thisTask.points.toString()}
                     onValueChange={(valueString) =>
                       setTask((prevTask) => ({
@@ -140,7 +171,7 @@ export default function TaskCard({
       </MobileSwiper>
     </div>
   ) : (
-    <Card.Root w="100%" {...props} bg={`hsla(263, 50%, ${lightValue}%, 1.00)`}>
+    <Card.Root w="100%" {...props} bg={`hsla(102, 50%, ${lightValue}%, 1.00)`}>
       <Card.Header py="0.5" px="0.5">
         <HStack justifyContent={"end"} w="100%">
           <IconButton

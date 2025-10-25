@@ -36,6 +36,7 @@ export default function Mobile() {
                 opacity={currTab === name ? "1" : ".5"}
                 borderBottomRightRadius={"0.7rem"}
                 borderBottomLeftRadius={"0.7rem"}
+                key={name}
               >
                 {name}
               </Tabs.Trigger>
@@ -44,7 +45,7 @@ export default function Mobile() {
         </Tabs.List>
         {tabs.map((name) => {
           return (
-            <Tabs.Content value={name} paddingTop="0">
+            <Tabs.Content value={name} paddingTop="0" key={name}>
               <BoardColumn
                 padding="5"
                 hideTitle={true}
