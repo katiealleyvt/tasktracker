@@ -5,14 +5,14 @@ import { Container, Tabs, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function Mobile() {
-  const tabs = ["Tasks", Status.Reward.toString(), Status.Archive.toString()];
+  const tabs = [
+    "Tasks",
+    Status.Reward.toString(),
+    Status.Archive.toString(),
+    Status.Done.toString(),
+  ];
 
   const [currTab, setCurrTab] = useState<string>(tabs[0]);
-  console.log(
-    "Object.keys(status)",
-    Object.keys(Status),
-    Status.Reward.toString()
-  );
   return (
     <>
       <Tabs.Root

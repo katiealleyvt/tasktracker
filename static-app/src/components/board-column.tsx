@@ -43,6 +43,7 @@ export function TaskColumn({ status, ...props }: Props) {
     duplicateTask,
   } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
+  console.log("status", status);
   const taskCards = status
     ? items.filter((item) => item.status === status)
     : items.filter(
@@ -76,7 +77,7 @@ export function TaskColumn({ status, ...props }: Props) {
   }
 
   function archiveTask(task: Task) {
-    updateTask(task._id!, { status: Status.Done });
+    updateTask(task._id!, { status: Status.Archive });
     toaster.create({
       title: "Task archived.",
       duration: 3000,

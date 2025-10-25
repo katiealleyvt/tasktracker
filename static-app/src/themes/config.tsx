@@ -22,7 +22,7 @@ const config = defineConfig({
           tasks: { value: "{colors.brand.green}" },
           rewards: { value: "{colors.brand.blue}" },
           archive: { value: "{colors.brand.purple}" },
-          dwd: { value: "{colors.brand.pink}" },
+          done: { value: "{colors.brand.pink}" },
         },
       },
     },
