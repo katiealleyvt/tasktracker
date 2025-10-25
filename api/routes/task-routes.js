@@ -20,6 +20,7 @@ router.post("/post", async (req, res) => {
     name: req.body.name,
     points: req.body.points,
     status: req.body.status,
+    createdOn: new Date(),
   });
 
   try {
@@ -60,6 +61,8 @@ router.patch("/update/:id", async (req, res) => {
   }
   try {
     const id = req.params.id;
+    req.body.updatedOn = new Date();
+
     const updatedData = req.body;
     const options = { new: true };
 

@@ -52,8 +52,10 @@ export default function TaskCard({
   const [isEditing, setIsEditing] = useState(task.name === "");
   const [thisTask, setTask] = useState<Task>(task);
   const { isMobile } = useContext(WindowContext);
+  const createdDate = useMemo(() => {
+    return thisTask.createdOn ? new Date(thisTask.createdOn) : undefined;
+  }, [thisTask.createdOn]);
   function handleEditToggle() {
-    console.log("handling edit");
     if (isEditing) {
       updateTask(thisTask);
     }

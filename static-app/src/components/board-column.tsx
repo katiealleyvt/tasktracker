@@ -228,7 +228,6 @@ export function RewardColumn({ ...props }: GridItemProps) {
   const costAvg = useMemo(() => {
     let sum = 0;
     items.forEach((f) => (sum += f.cost));
-    console.log(sum / items.length);
     return sum / items.length;
   }, [items]);
 

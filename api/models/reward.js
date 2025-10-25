@@ -13,6 +13,15 @@ const rewardSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  createdOn: {
+    type: Date,
+  },
+  updatedOn: {
+    type: Date,
+  },
+  archivedOn: {
+    type: Date,
+  },
 });
 
 module.exports = mongoose.model("Reward", rewardSchema);

@@ -43,7 +43,6 @@ export default function FilterRow({
   function toggleFilter(filter: Filter) {
     const isSelected = group.isChecked(filter.value);
     group.toggleValue(filter.value);
-    console.log("isSelected", !isSelected);
     action(filter, !isSelected);
   }
   return (

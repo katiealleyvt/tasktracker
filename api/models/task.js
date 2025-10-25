@@ -14,6 +14,15 @@ const taskSchema = new mongoose.Schema({
     required: true,
     type: String,
   },
+  createdOn: {
+    type: Date,
+  },
+  updatedOn: {
+    type: Date,
+  },
+  archivedOn: {
+    type: Date,
+  },
 });
 
 module.exports = mongoose.model("Task", taskSchema);

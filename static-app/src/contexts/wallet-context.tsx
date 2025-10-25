@@ -18,7 +18,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   const [item, setItem] = useState<Wallet>({ amount: 0 });
 
   const update = async (walletItem: Wallet) => {
-    console.log("walletItem", walletItem);
     try {
       const wallet = await updateWallet({ ...walletItem }, "");
     } catch (error) {
@@ -28,7 +27,6 @@ export function WalletProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const fetchWallet = async () => {
       const wallet = await getWallet();
-      console.log("wallet", wallet);
       setItem(wallet);
     };
     fetchWallet();

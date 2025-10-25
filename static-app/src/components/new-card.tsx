@@ -49,7 +49,6 @@ function TaskRoot({ createNew, toggle, status, ...props }: TaskRootProps) {
     setNewTask(new Task("", 0, status ? status : Status.Todo));
   }
   function setNewItem({ key, value }: { key: string; value: any }) {
-    console.log("key", value);
     if (key === "name" && typeof value === "string") {
       setNewTask((prevTask) => ({ ...prevTask, name: value }));
     } else if (key === "number" && typeof value === "number") {
