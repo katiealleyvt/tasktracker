@@ -15,14 +15,14 @@ import { Task } from "../models/task";
 import { LoadingCard } from "./ui/loading.tsx";
 
 type Props = GridItemProps & {
-  status: Status;
+  status?: Status;
   hideTitle?: boolean;
 };
 export default function BoardColumn({ status, hideTitle, ...props }: Props) {
   return (
     <GridItem {...props}>
       <VStack gap="5" w="100%">
-        {!hideTitle && <StatusCard status={status} />}
+        {!hideTitle && status && <StatusCard status={status} />}
         {status !== Status.Reward ? (
           <TaskColumn status={status} />
         ) : (
@@ -43,12 +43,18 @@ export function TaskColumn({ status, ...props }: Props) {
     duplicateTask,
   } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
-  const taskCards = items.filter((item) => item.status === status);
+  const taskCards = status
+    ? items.filter((item) => item.status === status)
+    : items.filter(
+        (item) =>
+          item.status !== Status.Archive &&
+          item.status !== Status.Reward &&
+          item.status !== Status.Done
+      );
   // calculate task points averages to pass to each card
   const pointAvg = useMemo(() => {
     let sum = 0;
     taskCards.forEach((f) => (sum += f.points));
-    console.log(sum / taskCards.length);
     return sum / taskCards.length;
   }, [taskCards]);
 
@@ -86,7 +92,7 @@ export function TaskColumn({ status, ...props }: Props) {
   }
 
   function createCard() {
-    createTask(status);
+    createTask(status ?? Status.Todo);
     toaster.create({
       title: "Task created.",
       duration: 3000,
@@ -100,7 +106,6 @@ export function TaskColumn({ status, ...props }: Props) {
       duration: 3000,
     });
   }
-  console.log("items", items);
   return (
     <>
       {!isLoading ? (

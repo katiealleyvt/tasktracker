@@ -5,48 +5,57 @@ import { Container, Tabs, VStack } from "@chakra-ui/react";
 import { useState } from "react";
 
 export default function Mobile() {
-  const [selected, setSelected] = useState<Status>(Status.Daily);
+  const tabs = ["Tasks", Status.Reward.toString(), Status.Archive.toString()];
+
+  const [currTab, setCurrTab] = useState<string>(tabs[0]);
+  console.log(
+    "Object.keys(status)",
+    Object.keys(Status),
+    Status.Reward.toString()
+  );
   return (
     <>
       <Tabs.Root
         lazyMount
         unmountOnExit
-        defaultValue={selected}
+        defaultValue={currTab}
         variant="plain"
-        onValueChange={(details) => setSelected(details.value as Status)}
+        onValueChange={(details) => setCurrTab(details.value)}
       >
         <Tabs.List justifyContent={"space-around"} display="flex">
-          {Object.values(Status).map((status) => {
-            if (status !== Status.Archive) {
-              return (
-                <Tabs.Trigger
-                  value={status}
-                  bg={`status.${status.toLowerCase()}`}
-                  color={"black"}
-                  w="100%"
-                  borderRadius="0"
-                  border="solid white 1px"
-                  justifyContent={"center"}
-                  opacity={selected === status ? "1" : ".5"}
-                  borderBottomRightRadius={"0.7rem"}
-                  borderBottomLeftRadius={"0.7rem"}
-                >
-                  {status}
-                </Tabs.Trigger>
-              );
-            }
-            return undefined;
+          {tabs.map((name) => {
+            return (
+              <Tabs.Trigger
+                value={name}
+                bg={`tabs.${name.toLowerCase()}`}
+                color={"black"}
+                w="100%"
+                borderRadius="0"
+                border="solid white 1px"
+                justifyContent={"center"}
+                opacity={currTab === name ? "1" : ".5"}
+                borderBottomRightRadius={"0.7rem"}
+                borderBottomLeftRadius={"0.7rem"}
+              >
+                {name}
+              </Tabs.Trigger>
+            );
           })}
         </Tabs.List>
-        {Object.values(Status).map((status) => {
-          if (status !== Status.Archive) {
-            return (
-              <Tabs.Content value={status} paddingTop="0">
-                <BoardColumn status={status} padding="5" hideTitle={true} />
-              </Tabs.Content>
-            );
-          }
-          return undefined;
+        {tabs.map((name) => {
+          return (
+            <Tabs.Content value={name} paddingTop="0">
+              <BoardColumn
+                padding="5"
+                hideTitle={true}
+                status={
+                  Object.values(Status).includes(name as Status)
+                    ? (name as Status)
+                    : undefined
+                }
+              />
+            </Tabs.Content>
+          );
         })}
       </Tabs.Root>
       <Toaster />

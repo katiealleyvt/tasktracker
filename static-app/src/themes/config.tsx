@@ -18,11 +18,11 @@ const config = defineConfig({
     },
     semanticTokens: {
       colors: {
-        status: {
-          daily: { value: "{colors.brand.green}" },
-          todo: { value: "{colors.brand.blue}" },
-          done: { value: "{colors.brand.purple}" },
-          rewards: { value: "{colors.brand.pink}" },
+        tabs: {
+          tasks: { value: "{colors.brand.green}" },
+          rewards: { value: "{colors.brand.blue}" },
+          archive: { value: "{colors.brand.purple}" },
+          dwd: { value: "{colors.brand.pink}" },
         },
       },
     },

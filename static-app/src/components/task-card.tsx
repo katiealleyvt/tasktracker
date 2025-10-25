@@ -18,10 +18,18 @@ import {
   LuSave,
 } from "react-icons/lu";
 import { Status } from "../models/enum";
-import { useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Task } from "models/task";
-
-type TaskProps = CardRootProps & {
+import { WindowContext } from "contexts/window-context";
+import MobileSwiper from "./ui/mobile-slider";
+type TaskProps = React.HTMLAttributes<HTMLElement> & {
   task: Task;
   completeTask: (task: Task) => void;
   archiveTask: (task: Task) => void;
@@ -39,8 +47,9 @@ export default function TaskCard({
 }: TaskProps) {
   const [isEditing, setIsEditing] = useState(task.name === "");
   const [thisTask, setTask] = useState<Task>(task);
-
+  const { isMobile } = useContext(WindowContext);
   function handleEditToggle() {
+    console.log("handling edit");
     if (isEditing) {
       updateTask(thisTask);
     }
@@ -55,7 +64,82 @@ export default function TaskCard({
     if (value < 60) return 60;
     return Math.round(value);
   }, [pointAvg, thisTask.points]);
-  return (
+  return isMobile ? (
+    <div {...props} style={{ position: "relative", width: "100%" }}>
+      <MobileSwiper
+        style={{ width: "100%" }}
+        actions={[
+          {
+            name: "delete",
+            bgColor: "red.500",
+            icon: <LuTrash2 size="30" color="white" />,
+            action: () => archiveTask(thisTask),
+          },
+          {
+            name: "complete",
+            bgColor: "blue.500",
+            icon: <LuCircleCheckBig size="30" color="white" />,
+            action: () => completeTask(thisTask),
+          },
+        ]}
+      >
+        <Card.Root bg={`hsla(263, 50%, ${lightValue}%, 1.00)`}>
+          <Card.Header py="0.5" px="0.5">
+            <HStack justifyContent={"end"} w="100%">
+              <IconButton
+                size="sm"
+                variant={"ghost"}
+                onClick={() => handleEditToggle()}
+              >
+                {isEditing ? <LuSave /> : <LuPencilLine />}
+              </IconButton>
+            </HStack>
+          </Card.Header>
+          <Card.Body>
+            <HStack justifyContent={"space-between"} w="100%">
+              <Box>
+                {isEditing ? (
+                  <Input
+                    fontSize="md"
+                    value={thisTask.name}
+                    onChange={(e) =>
+                      setTask((prevTask) => ({
+                        ...prevTask,
+                        name: e.target.value,
+                      }))
+                    }
+                    placeholder="Insert Task"
+                  />
+                ) : (
+                  <Heading>{thisTask.name}</Heading>
+                )}
+              </Box>
+              <Box w="30%">
+                {isEditing ? (
+                  <NumberInput.Root
+                    fontSize="md"
+                    value={thisTask.points.toString()}
+                    onValueChange={(valueString) =>
+                      setTask((prevTask) => ({
+                        ...prevTask,
+                        points: !isNaN(valueString.valueAsNumber)
+                          ? valueString.valueAsNumber
+                          : prevTask.points,
+                      }))
+                    }
+                  >
+                    <NumberInput.Input />
+                  </NumberInput.Root>
+                ) : (
+                  <Heading textAlign={"right"}>{thisTask.points}</Heading>
+                )}
+              </Box>
+            </HStack>
+          </Card.Body>
+        </Card.Root>
+      </MobileSwiper>
+    </div>
+  ) : (
     <Card.Root w="100%" {...props} bg={`hsla(263, 50%, ${lightValue}%, 1.00)`}>
       <Card.Header py="0.5" px="0.5">
         <HStack justifyContent={"end"} w="100%">

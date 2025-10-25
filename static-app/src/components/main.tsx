@@ -25,11 +25,12 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Desktop from "./desktop";
 import { useMediaQuery } from "react-responsive";
 import Mobile from "./mobile";
+import { WindowContext } from "contexts/window-context";
 
 export default function Main() {
   const { wallet, setWallet } = useContext(WalletContext);
   const { isAuthenticated } = useAuth0();
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const { isMobile } = useContext(WindowContext);
   if (isAuthenticated) {
     return (
       <>
