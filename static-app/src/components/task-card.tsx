@@ -89,10 +89,19 @@ export default function TaskCard({
       >
         <Card.Root bg={`hsla(102, 50%, ${lightValue}%, 1.00)`}>
           <Card.Header py="0.5" px="0.5">
-            <HStack justifyContent={"space-between"} w="100%">
+            <HStack
+              justifyContent={
+                thisTask.status === Status.Daily ||
+                thisTask.status === Status.Todo
+                  ? "space-between"
+                  : "end"
+              }
+              w="100%"
+            >
               {(thisTask.status === Status.Daily ||
                 thisTask.status === Status.Todo) && (
                 <Tag.Root
+                  variant="solid"
                   marginLeft="2"
                   bgColor={
                     thisTask.status === Status.Daily
@@ -100,6 +109,7 @@ export default function TaskCard({
                       : "green.100"
                   }
                   size="lg"
+                  color="black"
                 >
                   <Tag.Label
                     display="inline-flex"
@@ -124,7 +134,7 @@ export default function TaskCard({
               </IconButton>
             </HStack>
           </Card.Header>
-          <Card.Body>
+          <Card.Body px="3" py="2">
             <HStack justifyContent={"space-between"} w="100%">
               <Box>
                 {isEditing ? (

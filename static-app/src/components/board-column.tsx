@@ -1,4 +1,10 @@
-import { type GridItemProps, GridItem, HStack, VStack } from "@chakra-ui/react";
+import {
+  type GridItemProps,
+  Button,
+  GridItem,
+  HStack,
+  VStack,
+} from "@chakra-ui/react";
 import TaskCard from "./task-card";
 import { Suspense, useContext, useEffect, useMemo, useState } from "react";
 import { Droppable } from "./droppable";
@@ -14,6 +20,7 @@ import { Reward } from "../models/reward";
 import { Task } from "../models/task";
 import { LoadingCard } from "./ui/loading.tsx";
 import FilterRow, { Filter } from "./filter-row.tsx";
+import { LuCirclePlus } from "react-icons/lu";
 
 type Props = GridItemProps & {
   status?: Status;
@@ -35,8 +42,14 @@ export default function BoardColumn({ status, hideTitle, ...props }: Props) {
 }
 
 export function TaskColumn({ status, ...props }: Props) {
-  const { items, isLoading, updateTask, createTask, duplicateTask } =
-    useContext(TaskContext);
+  const {
+    items,
+    isLoading,
+    updateTask,
+    createTask,
+    deleteTask,
+    duplicateTask,
+  } = useContext(TaskContext);
   const { wallet, setWallet } = useContext(WalletContext);
   const [taskCards, setTaskCards] = useState(
     status
@@ -48,6 +61,14 @@ export function TaskColumn({ status, ...props }: Props) {
             item.status !== Status.Done
         )
   );
+  useEffect(() => {
+    //if this is tasks tab
+    if (!status) {
+      filterTasks();
+    } else {
+      setTaskCards(items.filter((item) => item.status === status));
+    }
+  }, [items]);
   // calculate task points averages to pass to each card
   const pointAvg = useMemo(() => {
     let sum = 0;
@@ -97,7 +118,11 @@ export function TaskColumn({ status, ...props }: Props) {
   }
 
   function removeCard(task: Task) {
-    archiveTask(task);
+    if (task.status === Status.Archive) {
+      deleteTask(task._id);
+    } else {
+      archiveTask(task);
+    }
     toaster.create({
       title: "Task removed.",
       duration: 3000,
@@ -119,10 +144,9 @@ export function TaskColumn({ status, ...props }: Props) {
       duration: 3000,
     });
   }
-  function filterTasks(filter: Filter, isSelected: boolean) {
-    console.log("filters", filters);
+  function filterTasks(filter?: Filter, isSelected?: boolean) {
     let filteredItems: Task[] = [];
-    if (filter.type === FilterType.Status) {
+    if (filter && filter.type === FilterType.Status) {
       if (isSelected) {
         filteredItems = items.filter(
           (i) => i.status === (filter.value as Status)
@@ -141,11 +165,15 @@ export function TaskColumn({ status, ...props }: Props) {
     });
 
     setTaskCards(filteredItems);
-    setFilters((prev) =>
-      prev.map((p) => {
-        return p === filter ? { ...p, isSelected } : p;
-      })
-    );
+    if (filter && isSelected !== undefined) {
+      setFilters((prev) =>
+        prev.map((p) => {
+          return p === filter ? { ...p, isSelected } : p;
+        })
+      );
+    }
+
+    return filteredItems;
   }
   return (
     <>
@@ -157,7 +185,11 @@ export function TaskColumn({ status, ...props }: Props) {
               defaultValue={[Status.Daily.toString(), Status.Todo.toString()]}
               action={(filter, isSelected) => filterTasks(filter, isSelected)}
             />
+            <Button onClick={createCard} variant={"surface"} gap={2}>
+              <LuCirclePlus /> Create New
+            </Button>
           </HStack>
+
           {taskCards.map((item) => (
             <TaskCard
               task={item}
@@ -172,7 +204,6 @@ export function TaskColumn({ status, ...props }: Props) {
               pointAvg={pointAvg}
             />
           ))}
-          <NewCard createNew={createCard} />
         </>
       ) : (
         <>
