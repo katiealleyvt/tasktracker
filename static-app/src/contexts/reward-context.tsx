@@ -17,7 +17,7 @@ export const RewardContext = createContext<{
   isLoading: boolean;
   setItems: React.Dispatch<React.SetStateAction<Reward[]>>;
   updateReward: (id: ObjectId, updates: Partial<Reward>) => Promise<void>;
-  createReward: () => Promise<void>;
+  createReward: (r: Reward) => Promise<void>;
   deleteReward: (id: ObjectId) => Promise<void>;
 }>({
   items: [],
@@ -69,13 +69,13 @@ export function RewardProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
-  const createReward = async () => {
+  const createReward = async (reward: Reward) => {
     try {
       const updatedReward = await createRewardAPI(
         {
-          name: "",
-          cost: 0,
-          isArchived: false,
+          name: reward.name,
+          cost: reward.cost,
+          isArchived: reward.isArchived,
         },
         token
       );

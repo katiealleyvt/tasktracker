@@ -11,7 +11,7 @@ import { Droppable } from "./droppable";
 import StatusCard from "./status-card";
 import RewardCard from "./reward-card";
 import { toaster, Toaster } from "./ui/toaster";
-import NewCard from "./new-card";
+import { NewCard, useCardToggle } from "./new-card";
 import { FilterType, Status } from "../models/enum.tsx";
 import { RewardContext } from "../contexts/reward-context";
 import { TaskContext } from "../contexts/task-context";
@@ -129,8 +129,8 @@ export function TaskColumn({ status, ...props }: Props) {
     });
   }
 
-  function createCard() {
-    createTask(status ?? Status.Todo);
+  function createCard(t: Task) {
+    createTask(t);
     toaster.create({
       title: "Task created.",
       duration: 3000,
@@ -175,6 +175,9 @@ export function TaskColumn({ status, ...props }: Props) {
 
     return filteredItems;
   }
+
+  const { show, toggle } = useCardToggle();
+
   return (
     <>
       {!isLoading ? (
@@ -185,11 +188,13 @@ export function TaskColumn({ status, ...props }: Props) {
               defaultValue={[Status.Daily.toString(), Status.Todo.toString()]}
               action={(filter, isSelected) => filterTasks(filter, isSelected)}
             />
-            <Button onClick={createCard} variant={"surface"} gap={2}>
-              <LuCirclePlus /> Create New
-            </Button>
+            <NewCard.Toggle toggle={toggle} />
           </HStack>
-
+          <NewCard.TaskRoot
+            createNew={createCard}
+            show={show}
+            toggle={toggle}
+          />
           {taskCards.map((item) => (
             <TaskCard
               task={item}
@@ -217,6 +222,7 @@ export function RewardColumn({ ...props }: GridItemProps) {
   const { items, isLoading, updateReward, createReward, deleteReward } =
     useContext(RewardContext);
   const { wallet, setWallet } = useContext(WalletContext);
+  const { show, toggle } = useCardToggle();
 
   const costAvg = useMemo(() => {
     let sum = 0;
@@ -249,8 +255,8 @@ export function RewardColumn({ ...props }: GridItemProps) {
       duration: 3000,
     });
   }
-  function createCard() {
-    createReward();
+  function createCard(reward: Reward) {
+    createReward(reward);
     toaster.create({
       title: "Reward created.",
       duration: 3000,
@@ -267,6 +273,14 @@ export function RewardColumn({ ...props }: GridItemProps) {
     <>
       {!isLoading ? (
         <>
+          <HStack w="100%">
+            <NewCard.Toggle toggle={toggle} />
+          </HStack>
+          <NewCard.RewardRoot
+            createNew={createCard}
+            show={show}
+            toggle={toggle}
+          />
           {items.map((item) =>
             item.isArchived ? undefined : (
               <RewardCard
@@ -280,7 +294,9 @@ export function RewardColumn({ ...props }: GridItemProps) {
               />
             )
           )}
-          <NewCard createNew={createCard} />
+          {
+            //<NewCard createNew={createCard} />
+          }
         </>
       ) : (
         <LoadingCard />

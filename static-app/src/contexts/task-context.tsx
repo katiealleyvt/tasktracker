@@ -18,7 +18,7 @@ export const TaskContext = createContext<{
   setItems: React.Dispatch<React.SetStateAction<Task[]>>;
   isLoading: boolean;
   updateTask: (id: ObjectId, updates: Partial<Task>) => Promise<void>;
-  createTask: (status: Status) => Promise<void>;
+  createTask: (task: Task) => Promise<void>;
   deleteTask: (id: ObjectId) => Promise<void>;
   duplicateTask: { (task: Task): void };
 }>({
@@ -72,17 +72,17 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
-  const createTask = async (status: Status) => {
+  const createTask = async (task: Task) => {
     try {
       const updatedTask = await createTaskAPI(
         {
-          name: "",
-          points: 0,
-          status: status,
+          name: task.name,
+          points: task.points,
+          status: task.status,
         },
         token
       );
-      setItems((prevItems) => [...prevItems, updatedTask]);
+      setItems((prevItems) => [updatedTask, ...prevItems]);
       return updatedTask;
     } catch (error) {
       console.error("Failed to update task:", error);
