@@ -17,7 +17,7 @@ import { Item } from "models/other";
 import { Reward } from "models/reward";
 import { Task } from "models/task";
 import { ObjectId } from "mongoose";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LuCheck, LuCirclePlus } from "react-icons/lu";
 
 export function useCardToggle(initial: boolean = false) {
@@ -35,29 +35,34 @@ export function useCardToggle(initial: boolean = false) {
 type TaskRootProps = CardRootProps & {
   createNew: (t: Task) => void;
   show: boolean;
+  status?: Status;
   toggle: () => void;
 };
-function TaskRoot({ createNew, toggle, ...props }: TaskRootProps) {
-  const emptyTask = new Task("", 0, Status.Todo);
-  const [newTask, setNewTask] = useState<Task>(emptyTask);
+function TaskRoot({ createNew, toggle, status, ...props }: TaskRootProps) {
+  const [newTask, setNewTask] = useState<Task>(
+    new Task("", 0, status ? status : Status.Todo)
+  );
 
   function submitCard() {
     createNew(newTask);
     toggle();
-    setNewTask(emptyTask);
+    setNewTask(new Task("", 0, status ? status : Status.Todo));
   }
-  function setNewItem({ key, value }: { key: string; value: string }) {
-    if (key === "name") {
+  function setNewItem({ key, value }: { key: string; value: any }) {
+    console.log("key", value);
+    if (key === "name" && typeof value === "string") {
       setNewTask((prevTask) => ({ ...prevTask, name: value }));
-    } else if (key === "number") {
+    } else if (key === "number" && typeof value === "number") {
       setNewTask((prevTask) => ({
         ...prevTask,
-        points: !isNaN(parseFloat(value)) ? parseFloat(value) : prevTask.points,
+        points: value,
+        number: value,
       }));
     }
   }
   return (
     <Root
+      key={"task-root"}
       submitCard={submitCard}
       newItem={newTask}
       setNewItem={setNewItem}
@@ -71,26 +76,26 @@ type RewardRootProps = CardRootProps & {
   toggle: () => void;
 };
 function RewardRoot({ createNew, toggle, ...props }: RewardRootProps) {
-  const emptyReward = new Reward("", 0, false);
-  const [newReward, setNewReward] = useState<Reward>(emptyReward);
-
+  const [newReward, setNewReward] = useState<Reward>(new Reward("", 0, false));
   function submitCard() {
     createNew(newReward);
     toggle();
-    setNewReward(emptyReward);
+    setNewReward(new Reward("", 0, false));
   }
-  function setNewItem({ key, value }: { key: string; value: string }) {
-    if (key === "name") {
+  function setNewItem({ key, value }: { key: string; value: any }) {
+    if (key === "name" && typeof value === "string") {
       setNewReward((prevReward) => ({ ...prevReward, name: value }));
-    } else if (key === "number") {
+    } else if (key === "number" && typeof value === "number") {
       setNewReward((prevTask) => ({
         ...prevTask,
-        cost: !isNaN(parseFloat(value)) ? parseFloat(value) : prevTask.cost,
+        cost: value,
+        number: value,
       }));
     }
   }
   return (
     <Root
+      key={"reward-root"}
       submitCard={submitCard}
       newItem={newReward}
       setNewItem={setNewItem}
@@ -121,6 +126,7 @@ function Root({ submitCard, newItem, setNewItem, show, ...props }: RootProps) {
               bgColor="whiteAlpha.800"
               fontSize="md"
               placeholder="Insert Name"
+              defaultValue=""
               value={newItem.name}
               onChange={(e) =>
                 setNewItem({ key: "name", value: e.target.value })
@@ -131,9 +137,10 @@ function Root({ submitCard, newItem, setNewItem, show, ...props }: RootProps) {
             <NumberInput.Root
               fontSize="md"
               bgColor="whiteAlpha.800"
-              value={newItem.number.toString()}
-              onValueChange={(valueString) =>
-                setNewItem({ key: "number", value: valueString })
+              defaultValue={"0"}
+              value={newItem.number?.toString()}
+              onValueChange={(value) =>
+                setNewItem({ key: "number", value: value.valueAsNumber })
               }
             >
               <NumberInput.Input placeholder="Insert Value" />

@@ -194,6 +194,7 @@ export function TaskColumn({ status, ...props }: Props) {
             createNew={createCard}
             show={show}
             toggle={toggle}
+            status={status}
           />
           {taskCards.map((item) => (
             <TaskCard
